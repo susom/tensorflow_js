@@ -1,0 +1,60 @@
+{
+	"name": "TensorflowJS",
+
+	"namespace": "Stanford\\TensorflowJS",
+
+	"description": "An external module to perform tensorflow analysis coupled with REDCap survey questions",
+
+	"documentation": "README.md",
+
+	"authors": [
+		{
+			"name": "Andrew Martin",
+			"email": "andy123@stanford.edu",
+			"institution": "Stanford Medicine"
+		}
+	],
+
+	"permissions": [
+		"redcap_data_entry_form_top",
+		"redcap_survey_page_top"
+	],
+	
+	"enable-every-page-hooks-on-system-pages": false,	
+
+	"links": {
+		"project": [
+			{
+				"name": "TensorflowJS",
+				"icon": "report",
+				"url": "project_summary"
+			}
+		],
+		"control-center": [
+
+		]
+	},
+
+	"no-auth-pages": [
+
+	],
+
+	"project-settings": [
+
+	],
+
+	"system-settings": [
+
+	],
+
+	"crons": [
+
+	],
+
+	"compatibility": {
+		"php-version-min": "",
+		"php-version-max": "",
+		"redcap-version-min": "",
+		"redcap-version-max": ""
+	}
+}
