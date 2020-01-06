@@ -1,20 +1,24 @@
 <?php
-namespace Stanford\TensorflowJS\TensorflowJS;
+namespace Stanford\TensorFlowJS;
 
-class TensorflowJS extends \ExternalModules\AbstractExternalModule {
+require_once "emLoggerTrait.php";
+
+
+class TensorFlowJS extends \ExternalModules\AbstractExternalModule {
+    use emLoggerTrait;
+
 	public function __construct() {
 		parent::__construct();
 		// Other code to run when object is instantiated
 	}
 	
-	public function redcap_data_entry_form_top( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, int $repeat_instance = 1 ) {
+	public function redcap_data_entry_form_top($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $repeat_instance = 1 ) {
 		
 	}
 
 	
-	public function redcap_survey_page_top( int $project_id, string $record = NULL, string $instrument, int $event_id, int $group_id = NULL, string $survey_hash, int $response_id = NULL, int $repeat_instance = 1 ) {
+	public function redcap_survey_page_top($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $survey_hash, $response_id = NULL, $repeat_instance = 1 ) {
 		
 	}
 
-	
 }

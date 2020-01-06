@@ -1,9 +1,9 @@
 {
-	"name": "TensorflowJS",
+	"name": "TensorFlowJS",
 
-	"namespace": "Stanford\\TensorflowJS",
+	"namespace": "Stanford\\TensorFlowJS",
 
-	"description": "An external module to perform tensorflow analysis coupled with REDCap survey questions",
+	"description": "An external module to perform TensorFlow analysis coupled with REDCap survey questions",
 
 	"documentation": "README.md",
 
@@ -22,33 +22,83 @@
 	
 	"enable-every-page-hooks-on-system-pages": false,	
 
+	"noauth-pages": [
+		"modal"
+	],
+
 	"links": {
 		"project": [
 			{
-				"name": "TensorflowJS",
+				"name": "TensorFlowJS",
 				"icon": "report",
 				"url": "project_summary"
 			}
 		],
 		"control-center": [
-
+			{
+				"name": "TensorFlowJS Config",
+				"icon": "gear",
+				"url": "system_config"
+			}
 		]
 	},
 
 	"no-auth-pages": [
-
-	],
-
-	"project-settings": [
-
+		"model"
 	],
 
 	"system-settings": [
-
+		{
+			"key": "enable-system-debug-logging",
+			"name": "<b>Enable Debug Logging</b><br>If you have the Stanford emLogger external module installed and configured, you can enable additional debug-level logging through this checkbox",
+			"required": false,
+			"type": "checkbox"
+		}
 	],
 
-	"crons": [
-
+	"project-settings": [
+		{
+			"key": "model-url",
+			"name": "<b>Model Url</b><br>Public url for model.json definition",
+			"required": false,
+			"type": "text"
+		},
+		{
+			"key": "base64-image-field",
+			"name": "<b>Base64 Image Field</b><br>(optional) The image will be stored as a base64 string in this field",
+			"required": false,
+			"type": "field-list"
+		},
+		{
+			"key": "image-file-field",
+			"name": "<b>File Field</b><br>(optional) Store the image as a file in this field",
+			"required": false,
+			"type": "field-list"
+		},
+		{
+			"key": "model-results-field",
+			"name": "<b>Model Results</b><br>Field to store model results (as json object)",
+			"required": false,
+			"type": "field-list"
+		},
+		{
+			"key": "display-record-id",
+			"name": "<b>Display Record ID</b><br>If checked, user will see the record ID of their latest submission for reference",
+			"required": false,
+			"type": "checkbox"
+		},
+		{
+			"key": "ajax-save-mode",
+			"name": "<b>Ajax Saves</b><br>If checked, the form will save via ajax preventing the need to re-warm the model",
+			"required": false,
+			"type": "checkbox"
+		},
+		{
+			"key": "enable-project-debug-logging",
+			"name": "<b>Enable Debug Logging</b><br>If you have the Stanford emLogger external module installed and configured, you can enable additional debug-level logging through this checkbox",
+			"required": false,
+			"type": "checkbox"
+		}
 	],
 
 	"compatibility": {

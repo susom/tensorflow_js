@@ -1,7 +1,10 @@
 // This is a tensorflow helper object designed to manage all the tensorflow fun!
-window.RCTF = {
-    model_url: "/plugins/models/model.json",
+var RCTF = {
 
+    modelUrl: "/plugins/models/model.json",
+    model: {},
+
+    // labels: [],
     labels: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
         'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
     ],
@@ -9,35 +12,96 @@ window.RCTF = {
     labels_to_show: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
         'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
     ],
+    //
+    // model: {},
 
-    model: {},
-
-    loadModel: async function() {
-        var self = this;
-
-        self.startProgress();
-
-        function progress_model_load(p) {
-            let percent = Math.round(p * 100);
-            self.updateProgress(percent, "Loading Model (" + percent + "%)...");
-        }
-
-        this.model = await tf.loadLayersModel(this.model_url, { 'onProgress': progress_model_load });
-
-        self.updateProgress(100, "Warming up...");
-
-        // Warmup the model before using real data.
+    warmUpModel: function() {
+        // var _this = this;
         const warmupResult = this.model.predict(tf.zeros([1, 320, 320, 3]), );
         warmupResult.dataSync();
         tf.dispose(warmupResult);
-
-        self.prepareResults();
-
-        self.stopProgress();
     },
 
+    loadModel: async function() {
+        var _this = this;
+
+        _this.startProgress();
+
+        function progress_model_load(p) {
+            let percent = Math.round(p * 100);
+            _this.updateProgress(percent, "Loading Model (" + percent + "%)...");
+        }
+
+        this.model = await tf.loadLayersModel(this.modelUrl, { 'onProgress': progress_model_load });
+
+        _this.updateProgress(100, "Warming up...");
+
+        // Warmup the model before using real data.
+        _this.warmUpModel();
+
+        _this.prepareResults();
+
+        _this.stopProgress();
+    },
+
+    log: function(x) {
+        log(x);
+    },
+
+    loadModel2: async function() {
+        var _this = this;
+
+        // In the following line, you should include the prefixes of implementations you want to test.
+        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        // DON'T use "var indexedDB = ..." if you're not in a function.
+        // Moreover, you may need references to some window.IDB* objects:
+        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+        // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+        if (!window.indexedDB) {
+            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+        }
+
+
+        function progress_model_load(p) {
+            let percent = Math.round(p * 100);
+            _this.updateProgress(percent, "Loading Model (" + percent + "%)...");
+        }
+
+        _this.startProgress();
+
+        try {
+            this.model = await tf.loadLayersModel('indexeddb://model', { 'onProgress': progress_model_load });
+        } catch (error) {
+            log(error);
+            // Model is not in local db storage - let's get it online
+            log('Getting model from ' + this.modelUrl);
+            this.model = await tf.loadLayersModel(this.modelUrl, { 'onProgress': progress_model_load });
+
+            // Save the model to the local db
+            const saveResult = await this.model.save('indexeddb://model');
+            log("Saved model to local db?", saveResult);
+        }
+        log('Just loaded a model', this.model);
+
+        // Warmup the model before using real data.
+        // _this.updateProgress(100, "Warming up...");
+        log('removeProgress');
+        _this.stopProgress();
+
+        log('warming up model');
+        _this.warmUpModel();
+
+        log('preparingResults');
+        _this.prepareResults();
+
+
+    },
+
+
     preprocessImage: function(image) {
-        var self = this;
+        var _this = this;
 
         return tf.tidy(() => {
             let tensor = tf.browser.fromPixels(image, numChannels = 3);
@@ -62,20 +126,20 @@ window.RCTF = {
     // tensor: 0,
 
     get_preds: async function(webcam_elemnt, model) {
-        var self = this;
+        var _this = this;
 
-        tensor = self.preprocessImage(webcam_elemnt);
+        tensor = _this.preprocessImage(webcam_elemnt);
 
         var t0 = performance.now();
-        let prediction = self.model.predict(tensor);
+        let prediction = _this.model.predict(tensor);
         let data = prediction.dataSync();
         var t1 = performance.now();
 
-        var new_mean = (self.num_predictions * self.prediction_rolling_mean + t1 - t0) / (self.num_predictions + 1);
-        self.num_predictions += 1;
-        self.prediction_rolling_mean = new_mean;
+        var new_mean = (_this.num_predictions * _this.prediction_rolling_mean + t1 - t0) / (_this.num_predictions + 1);
+        _this.num_predictions += 1;
+        _this.prediction_rolling_mean = new_mean;
 
-        $(".prediction-time").text(`Average Prediction Time: ${Math.round(self.prediction_rolling_mean)} ms`)
+        $(".prediction-time").text(`Average Prediction Time: ${Math.round(_this.prediction_rolling_mean)} ms`)
 
         $("#memory").text(`GPU Memory: ${Math.round(tf.memory()["numBytesInGPU"]/1024/1024)} MB`);
 
@@ -85,8 +149,8 @@ window.RCTF = {
 
         // Update the results
         for (let i = 0; i < data.length; i++) {
-            if (self.labels_to_show.indexOf(self.labels[i]) != -1) {
-                bar = self.prediction_elements[i];
+            if (_this.labels_to_show.indexOf(_this.labels[i]) != -1) {
+                bar = _this.prediction_elements[i];
                 bar.css("width", `${data[i] * 100}%`);
             }
         }
@@ -97,7 +161,7 @@ window.RCTF = {
     },
 
     readURL: function(input) {
-        var self = this;
+        var _this = this;
 
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -119,15 +183,15 @@ window.RCTF = {
     prediction_elements: [],
 
     prepareResults: function() {
-        var self = this;
+        var _this = this;
 
         // Make a copy of the results template
         let pred_template = $(".prediction-template").clone();
         pred_template.removeAttr("hidden");
         pred_template.removeClass("prediction-template");
 
-        let labels = self.labels;
-        let labels_to_show = self.labels_to_show;
+        let labels = _this.labels;
+        let labels_to_show = _this.labels_to_show;
 
         for (let i = 0; i < labels.length; i++) {
             let e = pred_template.clone();
@@ -135,36 +199,36 @@ window.RCTF = {
             e.find('.label').text(label);
             $("#prediction-list").append(e);
 
-            self.prediction_elements.push($(e.find(".progress-bar")));
+            _this.prediction_elements.push($(e.find(".progress-bar")));
         }
 
         // Hide those results that are not set to show
         for (let i = 0; i < labels.length; i++) {
             if (labels_to_show.indexOf(labels[i]) == -1) {
-                self.prediction_elements[i].parent().parent().parent().hide();
+                _this.prediction_elements[i].parent().parent().parent().hide();
             }
         }
 
     },
 
     runModelOnImage: function(image) {
-        var self = this;
+        var _this = this;
 
         $('.prediction').show();
 
         // Set bars to zero
-        for (let i = 0; i < self.labels_to_show.length; i++) {
-            let bar = self.prediction_elements[i];
+        for (let i = 0; i < _this.labels_to_show.length; i++) {
+            let bar = _this.prediction_elements[i];
             bar.css("width", `0%`);
         }
 
         setTimeout(function() {
-            self.get_preds(image, self.model);
+            _this.get_preds(image, _this.model);
         }, 100);
     },
 
     bindUpload: function() {
-        var self = this;
+        var _this = this;
         $('#select_file').change(function() {
             console.log("Analyzing...");
             setTimeout(function() {
@@ -172,7 +236,7 @@ window.RCTF = {
                 $('#xray-image').show();
 
                 // Rune model
-                self.runModelOnImage($("#xray-image")[0]);
+                _this.runModelOnImage($("#xray-image")[0]);
             }, 100)
         });
 
@@ -202,6 +266,8 @@ window.RCTF = {
     }
 };
 
-// RCTF.loadModel();
-// RCTF.bindUpload();
+$(document).ready(function(){
+    RCTF.loadModel2();
+    RCTF.bindUpload();
+});
 
