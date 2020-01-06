@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ODM xmlns="http://www.cdisc.org/ns/odm/v1.3" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:redcap="https://projectredcap.org" xsi:schemaLocation="http://www.cdisc.org/ns/odm/v1.3 schema/odm/ODM1-3-1.xsd" ODMVersion="1.3.1" FileOID="000-00-0000" FileType="Snapshot" Description="TensorFlowEM Example 1" AsOfDateTime="2020-01-06T07:43:19" CreationDateTime="2020-01-06T07:43:19" SourceSystem="REDCap" SourceSystemVersion="9.5.3">
+<Study OID="Project.TensorFlowEMExample1">
+<GlobalVariables>
+	<StudyName>TensorFlowEM Example 1</StudyName>
+	<StudyDescription>This file contains the metadata, events, and data for REDCap project "TensorFlowEM Example 1".</StudyDescription>
+	<ProtocolName>TensorFlowEM Example 1</ProtocolName>
+	<redcap:RecordAutonumberingEnabled>1</redcap:RecordAutonumberingEnabled>
+	<redcap:CustomRecordLabel></redcap:CustomRecordLabel>
+	<redcap:SecondaryUniqueField></redcap:SecondaryUniqueField>
+	<redcap:SchedulingEnabled>0</redcap:SchedulingEnabled>
+	<redcap:SurveysEnabled>1</redcap:SurveysEnabled>
+	<redcap:SurveyInvitationEmailField></redcap:SurveyInvitationEmailField>
+	<redcap:Purpose>0</redcap:Purpose>
+	<redcap:PurposeOther></redcap:PurposeOther>
+	<redcap:ProjectNotes></redcap:ProjectNotes>
+	<redcap:MissingDataCodes></redcap:MissingDataCodes>
+	<redcap:SurveysGroup>
+		<redcap:Surveys form_name="survey" title="Example Survey" instructions="&lt;p style=&quot;margin-top: 10px; margin-right: 0px; margin-bottom: 10px; margin-left: 0px; font-family: Arial, Verdana, Helvetica, sans-serif; font-size: 12px; text-align: left; line-height: 1.5em; max-width: 700px; clear: both; padding: 0px;&quot;&gt;These are your survey instructions that you would enter for your survey participants. You may put whatever text you like here, which may include information about the purpose of the survey, who is taking the survey, or how to take the survey.&lt;/p&gt;&lt;br&gt;&lt;p style=&quot;margin-top: 10px; margin-right: 0px; margin-bottom: 10px; margin-left: 0px; font-family: Arial, Verdana, Helvetica, sans-serif; font-size: 12px; text-align: left; line-height: 1.5em; max-width: 700px; clear: both; padding: 0px;&quot;&gt;Surveys can use a single survey link for all respondents, which can be posted on a webpage or emailed out from your email application of choice. &lt;strong&gt;By default, all survey responses are collected anonymously&lt;/strong&gt; (that is, unless your survey asks for name, email, or other identifying information). If you wish to track individuals who have taken your survey, you may upload a list of email addresses into a Participant List within REDCap, in which you can have REDCap send them an email invitation, which will track if they have taken the survey and when it was taken. This method still collects responses anonymously, but if you wish to identify an individual respondent&#039;s answers, you may do so by also providing an Identifier in your Participant List. Of course, in that case you may want to inform your respondents in your survey&#039;s instructions that their responses are not being collected anonymously and can thus be traced back to them.&lt;/p&gt;" acknowledgement="&lt;p&gt;&lt;strong&gt;Thank you for taking the survey.&lt;/strong&gt;&lt;/p&gt;&lt;br&gt;&lt;p&gt;Have a nice day!&lt;/p&gt;" question_by_section="0" display_page_number="1" question_auto_numbering="0" survey_enabled="1" save_and_return="1" save_and_return_code_bypass="0" logo="" hide_title="0" view_results="0" min_responses_view_results="10" check_diversity_view_results="0" end_survey_redirect_url="" survey_expiration="" promis_skip_question="0" survey_auth_enabled_single="0" edit_completed_response="0" hide_back_button="0" show_required_field_text="1" confirmation_email_subject="" confirmation_email_content="" confirmation_email_from="" confirmation_email_from_display="" confirmation_email_attach_pdf="0" confirmation_email_attachment="" text_to_speech="0" text_to_speech_language="en" end_survey_redirect_next_survey="0" theme="" text_size="" font_family="16" theme_text_buttons="" theme_bg_page="" theme_text_title="" theme_bg_title="" theme_text_sectionheader="" theme_bg_sectionheader="" theme_text_question="" theme_bg_question="" enhanced_choices="0" repeat_survey_enabled="0" repeat_survey_btn_text="" repeat_survey_btn_location="BEFORE_SUBMIT" response_limit="" response_limit_include_partials="1" response_limit_custom_text="" survey_time_limit_days="" survey_time_limit_hours="" survey_time_limit_minutes="" email_participant_field="" end_of_survey_pdf_download="0" pdf_auto_archive="0" pdf_econsent_version="" pdf_econsent_type="" pdf_econsent_firstname_field="" pdf_econsent_firstname_event_id="" pdf_econsent_lastname_field="" pdf_econsent_lastname_event_id="" pdf_econsent_dob_field="" pdf_econsent_dob_event_id="" pdf_econsent_allow_edit="0" pdf_econsent_signature_field1="" pdf_econsent_signature_field2="" pdf_econsent_signature_field3="" pdf_econsent_signature_field4="" pdf_econsent_signature_field5=""/>
+	</redcap:SurveysGroup>
+</GlobalVariables>
+<MetaDataVersion OID="Metadata.TensorFlowEMExample1_2020-01-06_0743" Name="TensorFlowEM Example 1" redcap:RecordIdField="participant_id">
+	<FormDef OID="Form.survey" Name="Example Survey" Repeating="No" redcap:FormName="survey">
+		<ItemGroupRef ItemGroupOID="survey.participant_id" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.survey_timestamp" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.radio" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.dropdown" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.gym___0" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.aerobics___0" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.radio_branch" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.hidden_branch" Mandatory="No"/>
+		<ItemGroupRef ItemGroupOID="survey.survey_complete" Mandatory="No"/>
+	</FormDef>
+	<ItemGroupDef OID="survey.participant_id" Name="Example Survey" Repeating="No">
+		<ItemRef ItemOID="participant_id" Mandatory="No" redcap:Variable="participant_id"/>
+		<ItemRef ItemOID="redcap_survey_identifier" Mandatory="No" redcap:Variable="redcap_survey_identifier"/>
+		<ItemRef ItemOID="survey_timestamp" Mandatory="No" redcap:Variable="survey_timestamp"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.survey_timestamp" Name="Example Survey" Repeating="No">
+		<ItemRef ItemOID="survey_timestamp" Mandatory="No" redcap:Variable="survey_timestamp"/>
+		<ItemRef ItemOID="base64_image" Mandatory="No" redcap:Variable="base64_image"/>
+		<ItemRef ItemOID="image_file" Mandatory="No" redcap:Variable="image_file"/>
+		<ItemRef ItemOID="model_results" Mandatory="No" redcap:Variable="model_results"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.radio" Name="Section 1 (This is a section header with descriptive text. It only provides informational text and is used to divide the survey into sections for organization. If the survey is set to be displayed as &quot;one section per page&quot;, then these section headers will begin each new page of the survey.)" Repeating="No">
+		<ItemRef ItemOID="radio" Mandatory="No" redcap:Variable="radio"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.dropdown" Name="Example Survey" Repeating="No">
+		<ItemRef ItemOID="dropdown" Mandatory="No" redcap:Variable="dropdown"/>
+		<ItemRef ItemOID="textbox" Mandatory="No" redcap:Variable="textbox"/>
+		<ItemRef ItemOID="ma___1" Mandatory="No" redcap:Variable="ma"/>
+		<ItemRef ItemOID="ma___2" Mandatory="No" redcap:Variable="ma"/>
+		<ItemRef ItemOID="ma___3" Mandatory="No" redcap:Variable="ma"/>
+		<ItemRef ItemOID="ma___4" Mandatory="No" redcap:Variable="ma"/>
+		<ItemRef ItemOID="yn" Mandatory="No" redcap:Variable="yn"/>
+		<ItemRef ItemOID="tf" Mandatory="No" redcap:Variable="tf"/>
+		<ItemRef ItemOID="date_ymd" Mandatory="No" redcap:Variable="date_ymd"/>
+		<ItemRef ItemOID="file" Mandatory="No" redcap:Variable="file"/>
+		<ItemRef ItemOID="slider" Mandatory="No" redcap:Variable="slider"/>
+		<ItemRef ItemOID="descriptive" Mandatory="No" redcap:Variable="descriptive"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.gym___0" Name="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." Repeating="No">
+		<ItemRef ItemOID="gym___0" Mandatory="No" redcap:Variable="gym"/>
+		<ItemRef ItemOID="gym___1" Mandatory="No" redcap:Variable="gym"/>
+		<ItemRef ItemOID="gym___2" Mandatory="No" redcap:Variable="gym"/>
+		<ItemRef ItemOID="gym___3" Mandatory="No" redcap:Variable="gym"/>
+		<ItemRef ItemOID="gym___4" Mandatory="No" redcap:Variable="gym"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.aerobics___0" Name="" Repeating="No">
+		<ItemRef ItemOID="aerobics___0" Mandatory="No" redcap:Variable="aerobics"/>
+		<ItemRef ItemOID="aerobics___1" Mandatory="No" redcap:Variable="aerobics"/>
+		<ItemRef ItemOID="aerobics___2" Mandatory="No" redcap:Variable="aerobics"/>
+		<ItemRef ItemOID="aerobics___3" Mandatory="No" redcap:Variable="aerobics"/>
+		<ItemRef ItemOID="aerobics___4" Mandatory="No" redcap:Variable="aerobics"/>
+		<ItemRef ItemOID="eat___0" Mandatory="No" redcap:Variable="eat"/>
+		<ItemRef ItemOID="eat___1" Mandatory="No" redcap:Variable="eat"/>
+		<ItemRef ItemOID="eat___2" Mandatory="No" redcap:Variable="eat"/>
+		<ItemRef ItemOID="eat___3" Mandatory="No" redcap:Variable="eat"/>
+		<ItemRef ItemOID="eat___4" Mandatory="No" redcap:Variable="eat"/>
+		<ItemRef ItemOID="drink___0" Mandatory="No" redcap:Variable="drink"/>
+		<ItemRef ItemOID="drink___1" Mandatory="No" redcap:Variable="drink"/>
+		<ItemRef ItemOID="drink___2" Mandatory="No" redcap:Variable="drink"/>
+		<ItemRef ItemOID="drink___3" Mandatory="No" redcap:Variable="drink"/>
+		<ItemRef ItemOID="drink___4" Mandatory="No" redcap:Variable="drink"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.radio_branch" Name="ADVANCED FEATURES: The questions below will illustrate how some advanced survey features are used." Repeating="No">
+		<ItemRef ItemOID="radio_branch" Mandatory="No" redcap:Variable="radio_branch"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.hidden_branch" Name="Example Survey" Repeating="No">
+		<ItemRef ItemOID="hidden_branch" Mandatory="No" redcap:Variable="hidden_branch"/>
+		<ItemRef ItemOID="stop_actions___1" Mandatory="No" redcap:Variable="stop_actions"/>
+		<ItemRef ItemOID="stop_actions___2" Mandatory="No" redcap:Variable="stop_actions"/>
+		<ItemRef ItemOID="stop_actions___3" Mandatory="No" redcap:Variable="stop_actions"/>
+		<ItemRef ItemOID="comment_box" Mandatory="No" redcap:Variable="comment_box"/>
+	</ItemGroupDef>
+	<ItemGroupDef OID="survey.survey_complete" Name="Form Status" Repeating="No">
+		<ItemRef ItemOID="survey_complete" Mandatory="No" redcap:Variable="survey_complete"/>
+	</ItemGroupDef>
+	<ItemDef OID="participant_id" Name="participant_id" DataType="text" Length="999" redcap:Variable="participant_id" redcap:FieldType="text">
+		<Question><TranslatedText>Participant ID</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="redcap_survey_identifier" Name="redcap_survey_identifier" DataType="text" Length="999" redcap:Variable="redcap_survey_identifier">
+		<Question><TranslatedText>Survey Identifier</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="survey_timestamp" Name="survey_timestamp" DataType="datetime" Length="999" redcap:Variable="survey_timestamp">
+		<Question><TranslatedText>Survey Timestamp</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="survey_timestamp" Name="survey_timestamp" DataType="datetime" Length="999" redcap:Variable="survey_timestamp">
+		<Question><TranslatedText>Survey Timestamp</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="base64_image" Name="base64_image" DataType="text" Length="999" redcap:Variable="base64_image" redcap:FieldType="text">
+		<Question><TranslatedText>Base64 Image</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="image_file" Name="image_file" DataType="text" Length="999" redcap:Variable="image_file" redcap:FieldType="file">
+		<Question><TranslatedText>Image File</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="model_results" Name="model_results" DataType="text" Length="999" redcap:Variable="model_results" redcap:FieldType="textarea">
+		<Question><TranslatedText>Model Results</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="radio" Name="radio" DataType="text" Length="1" redcap:Variable="radio" redcap:FieldType="radio" redcap:SectionHeader="Section 1 (This is a section header with descriptive text. It only provides informational text and is used to divide the survey into sections for organization. If the survey is set to be displayed as &quot;one section per page&quot;, then these section headers will begin each new page of the survey.)">
+		<Question><TranslatedText>You may create MULTIPLE CHOICE questions and set the answer choices for them. You can have as many answer choices as you need. This multiple choice question is rendered as RADIO buttons.</TranslatedText></Question>
+		<CodeListRef CodeListOID="radio.choices"/>
+	</ItemDef>
+	<ItemDef OID="dropdown" Name="dropdown" DataType="text" Length="1" redcap:Variable="dropdown" redcap:FieldType="select">
+		<Question><TranslatedText>You may also set multiple choice questions as DROP-DOWN MENUs.</TranslatedText></Question>
+		<CodeListRef CodeListOID="dropdown.choices"/>
+	</ItemDef>
+	<ItemDef OID="textbox" Name="textbox" DataType="float" Length="999" SignificantDigits="1" redcap:Variable="textbox" redcap:FieldType="text" redcap:TextValidationType="float">
+		<Question><TranslatedText>This is a TEXT BOX, which allows respondents to enter a small amount of text. A Text Box can be validated, if needed, as a number, integer, phone number, email, or zipcode. If validated as a number or integer, you may also set the minimum and/or maximum allowable values.
+
+This question has &quot;number&quot; validation set with a minimum of 1 and a maximum of 10. </TranslatedText></Question>
+		<RangeCheck Comparator="GE" SoftHard="Soft">
+			<CheckValue>1</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 10). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+		<RangeCheck Comparator="LE" SoftHard="Soft">
+			<CheckValue>10</CheckValue>
+			<ErrorMessage><TranslatedText>The value you provided is outside the suggested range. (1 - 10). This value is admissible, but you may wish to double check it.</TranslatedText></ErrorMessage>
+		</RangeCheck>
+	</ItemDef>
+	<ItemDef OID="ma___1" Name="ma___1" DataType="boolean" Length="1" redcap:Variable="ma" redcap:FieldType="checkbox">
+		<Question><TranslatedText>This type of multiple choice question, known as CHECKBOXES, allows for more than one answer choice to be selected, whereas radio buttons and drop-downs only allow for one choice.</TranslatedText></Question>
+		<CodeListRef CodeListOID="ma___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="ma___2" Name="ma___2" DataType="boolean" Length="1" redcap:Variable="ma" redcap:FieldType="checkbox">
+		<Question><TranslatedText>This type of multiple choice question, known as CHECKBOXES, allows for more than one answer choice to be selected, whereas radio buttons and drop-downs only allow for one choice.</TranslatedText></Question>
+		<CodeListRef CodeListOID="ma___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="ma___3" Name="ma___3" DataType="boolean" Length="1" redcap:Variable="ma" redcap:FieldType="checkbox">
+		<Question><TranslatedText>This type of multiple choice question, known as CHECKBOXES, allows for more than one answer choice to be selected, whereas radio buttons and drop-downs only allow for one choice.</TranslatedText></Question>
+		<CodeListRef CodeListOID="ma___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="ma___4" Name="ma___4" DataType="boolean" Length="1" redcap:Variable="ma" redcap:FieldType="checkbox">
+		<Question><TranslatedText>This type of multiple choice question, known as CHECKBOXES, allows for more than one answer choice to be selected, whereas radio buttons and drop-downs only allow for one choice.</TranslatedText></Question>
+		<CodeListRef CodeListOID="ma___4.choices"/>
+	</ItemDef>
+	<ItemDef OID="yn" Name="yn" DataType="boolean" Length="1" redcap:Variable="yn" redcap:FieldType="yesno">
+		<Question><TranslatedText>You can create YES-NO questions.
+
+This question has vertical alignment of choices on the right.</TranslatedText><redcap:FormattedTranslatedText>You can create YES-NO questions.&lt;br&gt;&lt;br&gt;This question has vertical alignment of choices on the right.</redcap:FormattedTranslatedText></Question>
+		<CodeListRef CodeListOID="yn.choices"/>
+	</ItemDef>
+	<ItemDef OID="tf" Name="tf" DataType="boolean" Length="1" redcap:Variable="tf" redcap:FieldType="truefalse" redcap:CustomAlignment="RH">
+		<Question><TranslatedText>And you can also create TRUE-FALSE questions.
+
+This question has horizontal alignment.</TranslatedText><redcap:FormattedTranslatedText>And you can also create TRUE-FALSE questions.&lt;br&gt;&lt;br&gt;This question has horizontal alignment.</redcap:FormattedTranslatedText></Question>
+		<CodeListRef CodeListOID="tf.choices"/>
+	</ItemDef>
+	<ItemDef OID="date_ymd" Name="date_ymd" DataType="date" Length="999" redcap:Variable="date_ymd" redcap:FieldType="text" redcap:TextValidationType="date_ymd">
+		<Question><TranslatedText>DATE questions are also an option. If you click the calendar icon on the right, a pop-up calendar will appear, thus allowing the respondent to easily select a date. Or it can be simply typed in.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="file" Name="file" DataType="text" Length="999" redcap:Variable="file" redcap:FieldType="file">
+		<Question><TranslatedText>The FILE UPLOAD question type allows respondents to upload any type of document to the survey that you may afterward download and open when viewing your survey results.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="slider" Name="slider" DataType="integer" Length="999" redcap:Variable="slider" redcap:FieldType="slider" redcap:SliderLabels="You can provide labels above the slider | Middle label | Right-hand label">
+		<Question><TranslatedText>A SLIDER is a question type that allows the respondent to choose an answer along a continuum. The respondent&#039;s answer is saved as an integer between 0 (far left) and 100 (far right) with a step of 1.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="descriptive" Name="descriptive" DataType="text" Length="999" redcap:Variable="descriptive" redcap:FieldType="descriptive">
+		<Question><TranslatedText>You may also use DESCRIPTIVE TEXT to provide informational text within a survey section. </TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="gym___0" Name="gym___0" DataType="boolean" Length="1" redcap:Variable="gym" redcap:FieldType="checkbox" redcap:SectionHeader="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Gym (Weight Training)</TranslatedText></Question>
+		<CodeListRef CodeListOID="gym___0.choices"/>
+	</ItemDef>
+	<ItemDef OID="gym___1" Name="gym___1" DataType="boolean" Length="1" redcap:Variable="gym" redcap:FieldType="checkbox" redcap:SectionHeader="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Gym (Weight Training)</TranslatedText></Question>
+		<CodeListRef CodeListOID="gym___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="gym___2" Name="gym___2" DataType="boolean" Length="1" redcap:Variable="gym" redcap:FieldType="checkbox" redcap:SectionHeader="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Gym (Weight Training)</TranslatedText></Question>
+		<CodeListRef CodeListOID="gym___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="gym___3" Name="gym___3" DataType="boolean" Length="1" redcap:Variable="gym" redcap:FieldType="checkbox" redcap:SectionHeader="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Gym (Weight Training)</TranslatedText></Question>
+		<CodeListRef CodeListOID="gym___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="gym___4" Name="gym___4" DataType="boolean" Length="1" redcap:Variable="gym" redcap:FieldType="checkbox" redcap:SectionHeader="Below is a matrix of checkbox fields. A matrix can also be displayed as radio button fields." redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Gym (Weight Training)</TranslatedText></Question>
+		<CodeListRef CodeListOID="gym___4.choices"/>
+	</ItemDef>
+	<ItemDef OID="aerobics___0" Name="aerobics___0" DataType="boolean" Length="1" redcap:Variable="aerobics" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Aerobics</TranslatedText></Question>
+		<CodeListRef CodeListOID="aerobics___0.choices"/>
+	</ItemDef>
+	<ItemDef OID="aerobics___1" Name="aerobics___1" DataType="boolean" Length="1" redcap:Variable="aerobics" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Aerobics</TranslatedText></Question>
+		<CodeListRef CodeListOID="aerobics___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="aerobics___2" Name="aerobics___2" DataType="boolean" Length="1" redcap:Variable="aerobics" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Aerobics</TranslatedText></Question>
+		<CodeListRef CodeListOID="aerobics___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="aerobics___3" Name="aerobics___3" DataType="boolean" Length="1" redcap:Variable="aerobics" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Aerobics</TranslatedText></Question>
+		<CodeListRef CodeListOID="aerobics___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="aerobics___4" Name="aerobics___4" DataType="boolean" Length="1" redcap:Variable="aerobics" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Aerobics</TranslatedText></Question>
+		<CodeListRef CodeListOID="aerobics___4.choices"/>
+	</ItemDef>
+	<ItemDef OID="eat___0" Name="eat___0" DataType="boolean" Length="1" redcap:Variable="eat" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Eat Out (Dinner/Lunch)</TranslatedText></Question>
+		<CodeListRef CodeListOID="eat___0.choices"/>
+	</ItemDef>
+	<ItemDef OID="eat___1" Name="eat___1" DataType="boolean" Length="1" redcap:Variable="eat" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Eat Out (Dinner/Lunch)</TranslatedText></Question>
+		<CodeListRef CodeListOID="eat___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="eat___2" Name="eat___2" DataType="boolean" Length="1" redcap:Variable="eat" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Eat Out (Dinner/Lunch)</TranslatedText></Question>
+		<CodeListRef CodeListOID="eat___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="eat___3" Name="eat___3" DataType="boolean" Length="1" redcap:Variable="eat" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Eat Out (Dinner/Lunch)</TranslatedText></Question>
+		<CodeListRef CodeListOID="eat___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="eat___4" Name="eat___4" DataType="boolean" Length="1" redcap:Variable="eat" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Eat Out (Dinner/Lunch)</TranslatedText></Question>
+		<CodeListRef CodeListOID="eat___4.choices"/>
+	</ItemDef>
+	<ItemDef OID="drink___0" Name="drink___0" DataType="boolean" Length="1" redcap:Variable="drink" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Drink (Alcoholic Beverages)</TranslatedText></Question>
+		<CodeListRef CodeListOID="drink___0.choices"/>
+	</ItemDef>
+	<ItemDef OID="drink___1" Name="drink___1" DataType="boolean" Length="1" redcap:Variable="drink" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Drink (Alcoholic Beverages)</TranslatedText></Question>
+		<CodeListRef CodeListOID="drink___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="drink___2" Name="drink___2" DataType="boolean" Length="1" redcap:Variable="drink" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Drink (Alcoholic Beverages)</TranslatedText></Question>
+		<CodeListRef CodeListOID="drink___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="drink___3" Name="drink___3" DataType="boolean" Length="1" redcap:Variable="drink" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Drink (Alcoholic Beverages)</TranslatedText></Question>
+		<CodeListRef CodeListOID="drink___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="drink___4" Name="drink___4" DataType="boolean" Length="1" redcap:Variable="drink" redcap:FieldType="checkbox" redcap:MatrixGroupName="weekly_schedule">
+		<Question><TranslatedText>Drink (Alcoholic Beverages)</TranslatedText></Question>
+		<CodeListRef CodeListOID="drink___4.choices"/>
+	</ItemDef>
+	<ItemDef OID="radio_branch" Name="radio_branch" DataType="text" Length="1" redcap:Variable="radio_branch" redcap:FieldType="radio" redcap:SectionHeader="ADVANCED FEATURES: The questions below will illustrate how some advanced survey features are used.">
+		<Question><TranslatedText>BRANCHING LOGIC: The question immediately following this one is using branching logic, which means that the question will stay hidden until defined criteria are specified.
+
+For example, the following question has been set NOT to appear until the respondent selects the second option to the right.  </TranslatedText></Question>
+		<CodeListRef CodeListOID="radio_branch.choices"/>
+	</ItemDef>
+	<ItemDef OID="hidden_branch" Name="hidden_branch" DataType="text" Length="999" redcap:Variable="hidden_branch" redcap:FieldType="text" redcap:BranchingLogic="[radio_branch] = &quot;2&quot;">
+		<Question><TranslatedText>HIDDEN QUESTION: This question will only appear when you select the second option of the question immediately above.</TranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="stop_actions___1" Name="stop_actions___1" DataType="boolean" Length="1" redcap:Variable="stop_actions" redcap:FieldType="checkbox">
+		<Question><TranslatedText>STOP ACTIONS may be used with any multiple choice question. Stop actions can be applied to any (or all) answer choices. When that answer choice is selected by a respondent, their survey responses are then saved, and the survey is immediately ended.
+
+The third option to the right has a stop action.</TranslatedText></Question>
+		<CodeListRef CodeListOID="stop_actions___1.choices"/>
+	</ItemDef>
+	<ItemDef OID="stop_actions___2" Name="stop_actions___2" DataType="boolean" Length="1" redcap:Variable="stop_actions" redcap:FieldType="checkbox">
+		<Question><TranslatedText>STOP ACTIONS may be used with any multiple choice question. Stop actions can be applied to any (or all) answer choices. When that answer choice is selected by a respondent, their survey responses are then saved, and the survey is immediately ended.
+
+The third option to the right has a stop action.</TranslatedText></Question>
+		<CodeListRef CodeListOID="stop_actions___2.choices"/>
+	</ItemDef>
+	<ItemDef OID="stop_actions___3" Name="stop_actions___3" DataType="boolean" Length="1" redcap:Variable="stop_actions" redcap:FieldType="checkbox">
+		<Question><TranslatedText>STOP ACTIONS may be used with any multiple choice question. Stop actions can be applied to any (or all) answer choices. When that answer choice is selected by a respondent, their survey responses are then saved, and the survey is immediately ended.
+
+The third option to the right has a stop action.</TranslatedText></Question>
+		<CodeListRef CodeListOID="stop_actions___3.choices"/>
+	</ItemDef>
+	<ItemDef OID="comment_box" Name="comment_box" DataType="text" Length="999" redcap:Variable="comment_box" redcap:FieldType="textarea" redcap:CustomAlignment="LH">
+		<Question><TranslatedText>If you need the respondent to enter a large amount of text, you may use a NOTES BOX.
+
+This question has also been set as a REQUIRED QUESTION, so the respondent cannot fully submit the survey until this question has been answered. ANY question type can be set to be required.</TranslatedText><redcap:FormattedTranslatedText>If you need the respondent to enter a large amount of text, you may use a NOTES BOX.&lt;br&gt;&lt;br&gt;This question has also been set as a REQUIRED QUESTION, so the respondent cannot fully submit the survey until this question has been answered. ANY question type can be set to be required.</redcap:FormattedTranslatedText></Question>
+	</ItemDef>
+	<ItemDef OID="survey_complete" Name="survey_complete" DataType="text" Length="1" redcap:Variable="survey_complete" redcap:FieldType="select" redcap:SectionHeader="Form Status">
+		<Question><TranslatedText>Complete?</TranslatedText></Question>
+		<CodeListRef CodeListOID="survey_complete.choices"/>
+	</ItemDef>
+	<CodeList OID="radio.choices" Name="radio" DataType="text" redcap:Variable="radio">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Choice One</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Choice Two</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Choice Three</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Etc.</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="dropdown.choices" Name="dropdown" DataType="text" redcap:Variable="dropdown">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Choice One</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Choice Two</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>Choice Three</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="4"><Decode><TranslatedText>Etc.</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ma___1.choices" Name="ma___1" DataType="boolean" redcap:Variable="ma" redcap:CheckboxChoices="1, Choice One | 2, Choice Two | 3, Choice Three | 4, Select as many as you like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ma___2.choices" Name="ma___2" DataType="boolean" redcap:Variable="ma" redcap:CheckboxChoices="1, Choice One | 2, Choice Two | 3, Choice Three | 4, Select as many as you like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ma___3.choices" Name="ma___3" DataType="boolean" redcap:Variable="ma" redcap:CheckboxChoices="1, Choice One | 2, Choice Two | 3, Choice Three | 4, Select as many as you like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="ma___4.choices" Name="ma___4" DataType="boolean" redcap:Variable="ma" redcap:CheckboxChoices="1, Choice One | 2, Choice Two | 3, Choice Three | 4, Select as many as you like">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="yn.choices" Name="yn" DataType="boolean" redcap:Variable="yn">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Yes</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>No</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="tf.choices" Name="tf" DataType="boolean" redcap:Variable="tf">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>True</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>False</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gym___0.choices" Name="gym___0" DataType="boolean" redcap:Variable="gym" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gym___1.choices" Name="gym___1" DataType="boolean" redcap:Variable="gym" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gym___2.choices" Name="gym___2" DataType="boolean" redcap:Variable="gym" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gym___3.choices" Name="gym___3" DataType="boolean" redcap:Variable="gym" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="gym___4.choices" Name="gym___4" DataType="boolean" redcap:Variable="gym" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="aerobics___0.choices" Name="aerobics___0" DataType="boolean" redcap:Variable="aerobics" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="aerobics___1.choices" Name="aerobics___1" DataType="boolean" redcap:Variable="aerobics" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="aerobics___2.choices" Name="aerobics___2" DataType="boolean" redcap:Variable="aerobics" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="aerobics___3.choices" Name="aerobics___3" DataType="boolean" redcap:Variable="aerobics" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="aerobics___4.choices" Name="aerobics___4" DataType="boolean" redcap:Variable="aerobics" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="eat___0.choices" Name="eat___0" DataType="boolean" redcap:Variable="eat" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="eat___1.choices" Name="eat___1" DataType="boolean" redcap:Variable="eat" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="eat___2.choices" Name="eat___2" DataType="boolean" redcap:Variable="eat" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="eat___3.choices" Name="eat___3" DataType="boolean" redcap:Variable="eat" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="eat___4.choices" Name="eat___4" DataType="boolean" redcap:Variable="eat" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="drink___0.choices" Name="drink___0" DataType="boolean" redcap:Variable="drink" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="drink___1.choices" Name="drink___1" DataType="boolean" redcap:Variable="drink" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="drink___2.choices" Name="drink___2" DataType="boolean" redcap:Variable="drink" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="drink___3.choices" Name="drink___3" DataType="boolean" redcap:Variable="drink" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="drink___4.choices" Name="drink___4" DataType="boolean" redcap:Variable="drink" redcap:CheckboxChoices="0, Monday | 1, Tuesday | 2, Wednesday | 3, Thursday | 4, Friday">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="radio_branch.choices" Name="radio_branch" DataType="text" redcap:Variable="radio_branch">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>This option does nothing.</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Clicking this option will trigger the branching logic to reveal the next question.</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="3"><Decode><TranslatedText>This option also does nothing.</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="stop_actions___1.choices" Name="stop_actions___1" DataType="boolean" redcap:Variable="stop_actions" redcap:CheckboxChoices="1, This option does nothing. | 2, This option also does nothing. | 3, Click here to trigger the stop action and end the survey.">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="stop_actions___2.choices" Name="stop_actions___2" DataType="boolean" redcap:Variable="stop_actions" redcap:CheckboxChoices="1, This option does nothing. | 2, This option also does nothing. | 3, Click here to trigger the stop action and end the survey.">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="stop_actions___3.choices" Name="stop_actions___3" DataType="boolean" redcap:Variable="stop_actions" redcap:CheckboxChoices="1, This option does nothing. | 2, This option also does nothing. | 3, Click here to trigger the stop action and end the survey.">
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Checked</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Unchecked</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+	<CodeList OID="survey_complete.choices" Name="survey_complete" DataType="text" redcap:Variable="survey_complete">
+		<CodeListItem CodedValue="0"><Decode><TranslatedText>Incomplete</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="1"><Decode><TranslatedText>Unverified</TranslatedText></Decode></CodeListItem>
+		<CodeListItem CodedValue="2"><Decode><TranslatedText>Complete</TranslatedText></Decode></CodeListItem>
+	</CodeList>
+</MetaDataVersion>
+</Study>
+<ClinicalData StudyOID="Project.TensorFlowEMExample1" MetaDataVersionOID="Metadata.TensorFlowEMExample1_2020-01-06_0743">
+</ClinicalData>
+</ODM>
