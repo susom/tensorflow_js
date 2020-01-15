@@ -9,7 +9,7 @@ $loader = new \Twig_Loader_Filesystem(__DIR__."/templates/");
 $twig = new \Twig_Environment($loader);
 
 echo $twig->render("projectSummary.twig", [
-        "modelUrl"  => $module->getUrl('model',true,true)
+        "modelUrl"  => $module->getUrl('model',true,true) . "&pid=" . $module->getProjectId()
     ]
 );
 
