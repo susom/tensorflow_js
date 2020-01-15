@@ -4,25 +4,35 @@ var RCTF = {
     modelUrl: "/plugins/models/model.json",
     model: {},
 
-    // labels: [],
-    labels: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
-        'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
-    ],
+    // Do we present a button or just analyze after upload...
+    autoRunModel: true,
 
-    labels_to_show: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
-        'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
-    ],
+    // Jquery reference to upload element
+    uploadInput: {},
+    uploadImage: {},
+
+    // // labels: [],
+    // labels: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
+    //     'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
+    // ],
     //
-    // model: {},
+    // labels_to_show: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
+    //     'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
+    // ],
 
-    warmUpModel: function() {
-        // var _this = this;
-        const warmupResult = this.model.predict(tf.zeros([1, 320, 320, 3]), );
-        warmupResult.dataSync();
-        tf.dispose(warmupResult);
-    },
+    // METRICS FOR PREDICTION
+    prediction_count: 0,
+    prediction_rolling_mean: 0,
 
-    loadModel: async function() {
+    prediction_time: null,
+    prediction_memory: null,
+    prediction_data: null,
+
+    // Array of jquery objects to hold progress bars for results
+    prediction_elements: [],
+
+
+    loadModelOld: async function() {
         var _this = this;
 
         _this.startProgress();
@@ -44,11 +54,13 @@ var RCTF = {
         _this.stopProgress();
     },
 
-    log: function(x) {
-        log(x);
-    },
+    // log: function(x) {
+    //     log(x);
+    // },
 
-    loadModel2: async function() {
+
+    // An attempt to cache the model in local storage
+    loadModel: async function(callback) {
         var _this = this;
 
         // In the following line, you should include the prefixes of implementations you want to test.
@@ -60,16 +72,47 @@ var RCTF = {
         // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
 
         if (!window.indexedDB) {
-            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+            log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
         }
 
+
+        // Handle the progress div
+        _this.modalDiv = $('#pleaseWaitDialog');
+
+        function startProgress() {
+            _this.modalDiv.modal('show');
+        }
 
         function progress_model_load(p) {
             let percent = Math.round(p * 100);
-            _this.updateProgress(percent, "Loading Model (" + percent + "%)...");
+            let text = "Loading Model (" + percent + "%)...";
+            // log (text);
+
+            var pb = _this.modalDiv.find('.progress-bar');
+            // log(pb);
+            pb
+                .css("width", percent + '%')
+                .attr("aria-valuenow", percent)
+                .find('span').html(text);
+
+            // updateProgress(percent, "Loading Model (" + percent + "%)...");
         }
 
-        _this.startProgress();
+        function stopProgress() {
+            // log('about to StopProgress');
+            _this.modalDiv.modal('hide');
+            // For some reason, the modal doesn't always hide the first time so I'm adding a double-checker...
+            setTimeout( function() {
+                if (_this.modalDiv.hasClass('show')) {
+                    log('Found a modal with show class - re-remove modal');
+                    _this.modalDiv.modal('hide');
+                } else {
+                    // log('modal closed cleanly');
+                }
+            }, 100, _this);
+        }
+
+        startProgress();
 
         try {
             this.model = await tf.loadLayersModel('indexeddb://model', { 'onProgress': progress_model_load });
@@ -85,102 +128,94 @@ var RCTF = {
         }
         log('Just loaded a model', this.model);
 
-        // Warmup the model before using real data.
-        // _this.updateProgress(100, "Warming up...");
-        log('removeProgress');
-        _this.stopProgress();
+        stopProgress();
 
-        log('warming up model');
-        _this.warmUpModel();
+        // Skipping warmup for testing
+        // log('warming up model');
+        // _this.warmUpModel();
 
-        log('preparingResults');
-        _this.prepareResults();
-
-
+        // log('preparingResults');
+        // _this.prepareResults();
+        if(callback && typeof(callback) === "function"){
+            log("Model loaded callback");
+            callback.call(_this);
+        }
     },
 
 
-    preprocessImage: function(image) {
+    // Actually apply the model to the image data
+    predictImage: async function(image_element, callback) {
         var _this = this;
+        log("In predictImage");
 
-        return tf.tidy(() => {
-            let tensor = tf.browser.fromPixels(image, numChannels = 3);
-            const h = tensor.shape[0];
-            const w = tensor.shape[1];
-            console.log('dimensions are', h, w);
-            console.log('tensor', tensor);
-
-            tensor = tensor.slice([0, parseInt(w / 2 - h / 2), 0], [h, h, 3]);
-            tensor = tensor.resizeBilinear([320, 320]).toFloat();
-
-            let mean = tf.tensor1d([136.41330078125, 136.41330078125, 136.41330078125]);
-            let std = tf.tensor1d([70.48567315394112]);
-            let proc_image = tensor.sub(mean).div(std)
-                .expandDims(0);
-            return proc_image;
-        })
-    },
-
-    num_predictions: 0,
-    prediction_rolling_mean: 0,
-    // tensor: 0,
-
-    get_preds: async function(webcam_elemnt, model) {
-        var _this = this;
-
-        tensor = _this.preprocessImage(webcam_elemnt);
+        tensor = _this.preprocessImage(image_element);
 
         var t0 = performance.now();
         let prediction = _this.model.predict(tensor);
         let data = prediction.dataSync();
         var t1 = performance.now();
 
-        var new_mean = (_this.num_predictions * _this.prediction_rolling_mean + t1 - t0) / (_this.num_predictions + 1);
-        _this.num_predictions += 1;
+        var new_mean = (_this.prediction_count * _this.prediction_rolling_mean + t1 - t0) / (_this.prediction_count + 1);
+
+        _this.prediction_count += 1;
         _this.prediction_rolling_mean = new_mean;
+        _this.prediction_time = Math.round(_this.prediction_rolling_mean);                 //ms
+        _this.prediction_memory = Math.round(tf.memory()["numBytesInGPU"]/1024/1024);   //MB
+        _this.prediction_data = data;
 
-        $(".prediction-time").text(`Average Prediction Time: ${Math.round(_this.prediction_rolling_mean)} ms`)
 
-        $("#memory").text(`GPU Memory: ${Math.round(tf.memory()["numBytesInGPU"]/1024/1024)} MB`);
-
+        // $(".prediction-time").text(`Average Prediction Time: ${Math.round(_this.prediction_rolling_mean)} ms`)
+        // $("#memory").text(`GPU Memory: ${Math.round(tf.memory()["numBytesInGPU"]/1024/1024)} MB`);
 
         // Dump result data into REDcap field:
-        $('input[name="data"]').val(JSON.stringify(data));
+        // $('input[name="data"]').val(JSON.stringify(data));
 
-        // Update the results
-        for (let i = 0; i < data.length; i++) {
-            if (_this.labels_to_show.indexOf(_this.labels[i]) != -1) {
-                bar = _this.prediction_elements[i];
-                bar.css("width", `${data[i] * 100}%`);
-            }
-        }
+        // // Update the results
+        // for (let i = 0; i < data.length; i++) {
+        //     if (_this.labels_to_show.indexOf(_this.labels[i]) != -1) {
+        //         bar = _this.prediction_elements[i];
+        //         bar.css("width", `${data[i] * 100}%`);
+        //     }
+        // }
 
         tf.dispose(prediction);
         tf.dispose(data);
         tf.dispose(tensor);
-    },
 
-    readURL: function(input) {
-        var _this = this;
-
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                console.log("Second");
-                // Upon loading file, place results into xray-image
-                $('#xray-image').attr('src', e.target.result);
-
-                // Store data in REDCap field
-                $('input[name="image_base64"]').val(e.target.result);
-            };
-
-            console.log("First");
-            reader.readAsDataURL(input.files[0]);
+        log("predictImage Complete", data);
+        if(callback && typeof(callback) === "function"){
+            log("Calling callback");
+            callback.call(_this,data);
         }
     },
 
-    // Array of jquery objects to hold progress bars for results
-    prediction_elements: [],
+    // Run a pre-prediction to warm up model and reduce future model time
+    warmUpModel: function() {
+        // var _this = this;
+        const warmupResult = this.model.predict(tf.zeros([1, 320, 320, 3]), );
+        warmupResult.dataSync();
+        tf.dispose(warmupResult);
+    },
+
+
+    // Prepare image
+    preprocessImage: function(image) {
+        // var _this = this;
+        return tf.tidy(() => {
+            let tensor = tf.browser.fromPixels(image, numChannels = 3);
+            const h = tensor.shape[0];
+            const w = tensor.shape[1];
+            log('preprocessingImage to ' + h + 'x' + w);
+
+            tensor = tensor.slice([0, parseInt(w / 2 - h / 2), 0], [h, h, 3]);
+            tensor = tensor.resizeBilinear([320, 320]).toFloat();
+
+            let mean = tf.tensor1d([136.41330078125, 136.41330078125, 136.41330078125]);
+            let std = tf.tensor1d([70.48567315394112]);
+
+            return tensor.sub(mean).div(std).expandDims(0);
+        })
+    },
 
     prepareResults: function() {
         var _this = this;
@@ -211,63 +246,110 @@ var RCTF = {
 
     },
 
-    runModelOnImage: function(image) {
+    runModelOnImage: function() {
+        var _this = this;
+        log("Starting runModelOnImage");
+
+        // $('.prediction').show();
+        // // Set bars to zero
+        // for (let i = 0; i < _this.labels_to_show.length; i++) {
+        //     let bar = _this.prediction_elements[i];
+        //     bar.css("width", `0%`);
+        // }
+
+        _this.predictImage(_this.uploadImage[0], function() {
+            log("Done with runModelOnImage");
+            _this.analysisInProgress.hide();
+            // $('#tf_analyzing').hide();
+
+            _this.analysisDone
+                .append($("<div class='prediction_time'/>")
+                    .text(`Average Prediction Time: ${_this.prediction_time} ms`))
+                .append($("<div class='prediction_memory'/>")
+                    .text(`GPU Memory: ${_this.prediction_memory} MB`))
+                .show();
+
+            _this.resultsDiv.text(JSON.stringify(_this.prediction_data));
+
+        });
+
+    },
+
+
+    // Bind readURL function to changes in the input
+    // TODO: Add error handling
+    bindEvents: function() {
         var _this = this;
 
-        $('.prediction').show();
+        // Capture changes to the upload input
+        _this.uploadInput.change(function() {
+            log("Analyzing Upload Input...", _this.uploadInput);
+            // Read the image
+            _this.readURL(_this.uploadInput, _this.uploadImage, _this.previewImage);
+        });
 
-        // Set bars to zero
-        for (let i = 0; i < _this.labels_to_show.length; i++) {
-            let bar = _this.prediction_elements[i];
-            bar.css("width", `0%`);
+
+        // Handle manually triggering an analysis
+        _this.analysisBtn.bind('click', function() {
+            _this.analysisInProgress.show(0);
+            _this.analysisBtn.hide();
+
+            // Run the model after a brief timeout to let changes above take place
+            setTimeout( function() {
+                _this.runModelOnImage();
+            }, 10, _this);
+
+        });
+    },
+
+
+    // Reads the inputs and on completion calls the callback method
+    readURL: function(uploadInput, destImage, callback) {
+        var _this = this;
+        log("File read initiated...");
+        let input = uploadInput[0];
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            // Set up finishing function
+            reader.onload = function(e) {
+                log("reader onLoad event");
+                callback.call(_this, e.target.result);
+            };
+
+            // Start reading...
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            log("There are no files to read", uploadInput);
+        }
+    },
+
+
+    previewImage: function(result) {
+        var _this = this;
+
+        log("In previewImage", result);
+        _this.uploadImage
+            .attr('src', result)
+            .show(0);
+
+        // Should we run the model automatically?
+        if(_this.autoRunModel) {
+            _this.analysisBtn.click();
+            // setTimeout( function() {
+            //     _this.runModelOnImage();
+            // }, 10, _this);
+        } else {
+            // Show the analyze button
+            // Show options for doing analysis
+            _this.analysisBtn.show(0);
         }
 
-        setTimeout(function() {
-            _this.get_preds(image, _this.model);
-        }, 100);
-    },
 
-    bindUpload: function() {
-        var _this = this;
-        $('#select_file').change(function() {
-            console.log("Analyzing...");
-            setTimeout(function() {
-                // Show the uploaded file
-                $('#xray-image').show();
-
-                // Rune model
-                _this.runModelOnImage($("#xray-image")[0]);
-            }, 100)
-        });
-
-        // Capture click on image
-        $('.select-xray').click(function() {
-            $("#select_file").click();
-        });
-    },
-
-    startProgress: function() {
-        $('#pleaseWaitDialog').modal('show');
-    },
-
-    stopProgress: function() {
-        $('#pleaseWaitDialog').modal('hide');
-    },
-
-    setProgressTitle: function(title) {
-        $('#pleaseWaitDialog .modal-header').html("<h3>" + title + "</h3>");
-    },
-
-    updateProgress: function(percent, text) {
-        $('#pleaseWaitDialog .progress-bar')
-            .css("width", percent + '%')
-            .attr("aria-valuenow", percent)
-            .find('span').html(text);
+        // Auto-run model on image with short delay to allow upload image to redraw
+        // setTimeout(function() {
+        //     _this.runModelOnImage();
+        // }, 1, _this);
     }
 };
-
-$(document).ready(function(){
-    RCTF.loadModel2();
-    RCTF.bindUpload();
-});
 
