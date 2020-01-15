@@ -15,12 +15,73 @@
                 <p class="lead text-muted">
                     This page shows project settings
                 </p>
+
+                <div id="tf_controls" class="text-center">
+
+                    <div id="tf_upload_div" class="upload_div btn btn-primary" style="text-align: center; display:none;">
+
+                        <input type="file" hidden id="tf_upload_input" accept="image/*" capture="environment" />
+                        <div class="select-xray">
+                            <i class="fas fa-x-ray"></i>
+                            Select X-ray Image
+                        </div>
+                    </div>
+
+                    <div class='text-center' style='margin:auto;'>
+                        <img id="tf_upload_image" width="320" height="320" style="margin-top:20px; margin-bottom: 20px; display:none;"/>
+                    </div>
+
+                    <div id="tf_analyze" class="btn btn-primary" style="text-align: center; display:none;">
+                        <div class="start">
+                            <i class="fas fa-chart-bar"></i>
+                            Analyze Image
+                        </div>
+                    </div>
+
+                    <div id="tf_analyzing" class="btn btn-primary" style="text-align: center; display:none;">
+                        <div class="running">
+                            <i class="fas fa-spinner fa-pulse"></i>
+                            Analyzing...
+                        </div>
+                    </div>
+
+                    <pre id="tf_results">
+                    </pre>
+
+                    <div class = "prediction" style="width: 100%; display:none;">
+                        <h4>Prediction</h4>
+                        <div class="prediction-results">
+                            <div id="prediction-list" style="width: 100%; padding-right: 20px">
+                                <div class="row prediction-template" hidden>
+                                    <div class="col-4">
+                                        <span class="label"></span>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar" role="progressbar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div id="tf_analysis_done" class="" style="text-align: center; display:none;">
+                    <i class="fas fa-check-circle"></i>
+                    Analysis Done
+                </div>
             </div>
         </section>
     </main>
 
-    <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3><i class="fas fa-spinner fa-pulse"></i> Loading Model...</h3>
@@ -37,42 +98,12 @@
         </div>
     </div>
 
+    <div id="redcap_container" class="container mt-3">
+
+    </div>
+
     <div class="container mt-3" >
         <div class="row post-model">
-            <div class="upload_div btn btn-primaryrc" style="text-align: center; width: 100%;">
-
-                <input type="file" hidden id="select_file" accept="image/*" capture="environment"  {# onchange="RCML.readURL(this);" #}/>
-                <div class="select-xray">
-                    <i class="fas fa-x-ray"></i>
-                    <br>
-                    Select X-ray Image
-                </div>
-            </div>
-
-            <div class='text-center' style='margin:auto;'>
-                <img id="xray-image" width="320" height="320" style="margin-top:20px; margin-bottom: 20px; display:none;"/>
-            </div>
-
-            <div class = "prediction" style="width: 100%; display:none;">
-                <h4>Prediction</h4>
-                <div class="prediction-results">
-                    <div id="prediction-list" style="width: 100%; padding-right: 20px">
-                        <div class="row prediction-template" hidden>
-                            <div class="col-4">
-                                <span class="label"></span>
-                            </div>
-                            <div class="col-8">
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <hr>
-
         </div>
         <div style="color: darkgrey" id="memory"></div>
         <div style="color: darkgrey" class="prediction-time"></div>
@@ -90,5 +121,34 @@
     {% for source in sources %}
         <script type="text/javascript" src="{{ source }}"></script>
     {% endfor %}
+
+    <!-- Custom params for this page -->
+    <script>
+        RCTF.emSettings = {{ emSettings|raw }};
+
+        $(document).ready(function(){
+            RCTF.uploadInput        = $('#tf_upload_input');
+            RCTF.uploadImage        = $('#tf_upload_image');
+            RCTF.analysisBtn        = $('#tf_analyze');
+            RCTF.analysisInProgress = $('#tf_analyzing');
+            RCTF.analysisDone       = $('#tf_analysis_done');
+            RCTF.resultsDiv         = $('#tf_results');
+            RCTF.bindEvents();
+
+            // Capture click on image
+            $('.select-xray').click(function() {
+                log('select_clicked');
+                RCTF.uploadInput.click();
+            });
+
+            // Load the model
+            // RCTF.loadModel(function() {
+            //     $('#tf_upload_div').show();
+            // });
+
+            REDCapRenderer.init();
+
+        });
+    </script>
 
 {% endblock %}
