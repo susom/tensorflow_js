@@ -58,10 +58,13 @@ REDCapField.prototype.insertRow = function(container) {
 REDCapField.prototype.getRow = function(format) {
     let html = [
         '<div class="row">',
-        '<div class="col">',
+        '<div class="col col-auto">',
+        this.field_order,
+        '</div>',
+        '<div class="col-sm">',
         this.getLabel(),
         '</div>',
-        '<div class="col">',
+        '<div class="col-sm">',
         this.getInput(),
         '</div>',
         '</div>'
