@@ -85,6 +85,8 @@ REDCapField.prototype.getInput = function() {
 
 
 REDCapRenderer = {
+    context: {},
+    form: "",
     metadata: {},
     fields: {},
 

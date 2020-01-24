@@ -126,6 +126,8 @@
     <script>
         RCTF.emSettings = {{ emSettings|raw }};
 
+        REDCapRenderer.context = {{ context|raw }};
+
         $(document).ready(function(){
             RCTF.uploadInput        = $('#tf_upload_input');
             RCTF.uploadImage        = $('#tf_upload_image');
