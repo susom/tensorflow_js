@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Form fields examples · Bootstrap</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Bootstrap Form Input Elements</h2>
+        <p class="lead">Below are code templates of common form input elements.</p>
+    </div>
+
+    <div class="row">        
+        <div class="col-md-12 order-md-1">
+            <h4 class="mb-3">Section Header</h4>
+                
+            <form class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <!-- Copy -->
+                        <div class="form-group">
+                            <label for="stackedtext">Stacked Label</label>
+                            <input type="text" class="form-control" id="stackedtext" placeholder="" value="" required>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                    <div class="col-md-6 offset-md-1" style="padding-top:32px;">
+                        
+                        <!-- Copy -->
+                        <div class="form-group row">
+                            <label for="stackedtext" class="col-md-4">Stacked Label</label>
+                            <input type="text" class="form-control col-md-8" id="stackedtext" placeholder="" value="" required>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                </div>
+                
+
+                <hr class="my-5"/>
+
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <!-- Copy -->
+                        <div class="form-group">
+                            <label for="stackednote">Stacked Label</label>
+                            <textarea class="form-control" id="stackednote" placeholder="" value="" required></textarea>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                    <div class="col-md-6 offset-md-1" style="padding-top:32px;">
+                        
+                        <!-- Copy -->
+                        <div class="form-group row">
+                            <label for="stackednote" class="col-md-4">Side Label</label>
+                            <textarea class="form-control col-md-8" id="stackednote" placeholder="" value="" required></textarea>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                </div>
+
+                
+
+                <hr class="my-5"/>
+
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <!-- Copy -->
+                         <div class="form-group">
+                            <label for="country">Stacked Dropdown</label>
+                            <select class="form-control" id="country" required>
+                                <option value="">Choose...</option>
+                                <option>United States</option>
+                            </select>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                    <div class="col-md-6 offset-md-1" style="padding-top:32px;">
+                        
+                        <!-- Copy -->
+                        <div class="form-group row">
+                            <label for="country" class="col-md-4">Stacked Dropdown</label>
+                            <select class="form-control col-md-8" id="country" required>
+                                <option value="">Choose...</option>
+                                <option>United States</option>
+                            </select>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                </div>
+
+                <hr class="my-5"/>
+
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <!-- Copy -->
+                         <div class="form-group">
+                            <label for="stackedcheckbox">Stacked Checkbox</label>
+                            <div class="col-md p-0">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input form-control" id="same-address">
+                                    <label class="custom-control-label" for="same-address">Shipping address is the same as my billing</label>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="save-info">
+                                    <label class="custom-control-label" for="save-info">Save this information for next time</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                    <div class="col-md-6 offset-md-1" style="padding-top:32px;">
+                        
+                        <!-- Copy -->
+                        <div class="form-group row">
+                            <label for="stackedcheckbox" class="col-md-4">Stacked Checkbox</label>
+                            <div class="col-md-8">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input form-control" id="same-address">
+                                    <label class="custom-control-label" for="same-address">Shipping address is the same as my billing</label>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="save-info">
+                                    <label class="custom-control-label" for="save-info">Save this information for next time</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                </div>
+
+
+                <hr class="my-5"/>
+
+                <div class="row">
+                    <div class="col-md-5">
+
+                        <!-- Copy -->
+                         <div class="form-group">
+                            <label for="stackedcheckbox">Stacked Radio</label>
+                            <div class="col-md p-0">
+                                <div class="custom-control custom-radio">
+                                    <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                                    <label class="custom-control-label" for="credit">Credit card</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                                    <label class="custom-control-label" for="debit">Debit card</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+                                    <label class="custom-control-label" for="paypal">PayPal</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                    <div class="col-md-6 offset-md-1" style="padding-top:32px;">
+                        
+                        <!-- Copy -->
+                        <div class="form-group row">
+                            <label for="stackedcheckbox" class="col-md-4">Stacked Radio</label>
+                            <div class="col-md-8">
+                                <div class="custom-control custom-radio">
+                                    <input id="credit2" name="paymentMethod2" type="radio" class="custom-control-input" checked required>
+                                    <label class="custom-control-label" for="credit">Credit card</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input id="debit2" name="paymentMethod2" type="radio" class="custom-control-input" required>
+                                    <label class="custom-control-label" for="debit">Debit card</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                    <input id="paypal2" name="paymentMethod2" type="radio" class="custom-control-input" required>
+                                    <label class="custom-control-label" for="paypal">PayPal</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- This -->
+
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2020 Stanford Health Care</p>
+    </footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+</body>
+</html>
