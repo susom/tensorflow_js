@@ -1,6 +1,6 @@
 <?php
-namespace Stanford\TensorflowJS;
-/** @var Stanford\TensorflowJS\TensorflowJS $this */
+namespace Stanford\TensorFlowJS;
+/** @var TensorFlowJS $this */
 
 /**
  * This trait can be used with External Modules to enable the Stanford emLogger module
