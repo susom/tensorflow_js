@@ -45,7 +45,7 @@ class REDCapJsRenderer
      * @param null $form_name
      * @param null $record
      * @param null $instance
-     * @return
+     * @return integer
      * @throws \Exception
      */
     static function createHash($project_id, $event_id = null, $form_name = null, $record = null, $instance = null) {
@@ -80,17 +80,42 @@ class REDCapJsRenderer
 
         $value = [
             "project_id" => $project_id,
-            "event_id"  => $event_id,
-            "form_name" => $form_name,
-            "record" => $record,
-            "instance" => $instance
+            "event_id"   => $event_id,
+            "form_name"  => $form_name,
+            "record"     => $record,
+            "instance"   => $instance,
+            "hash"       => $hash
         ];
 
+        $log_id = $module->log(__FUNCTION__, $value);
+
         // Log it
-        $log_id = $module->log($hash, $value);
-        $module->emDebug(__METHOD__, $log_id);
-        return $log_id;
+        $module->emDebug($hash, $log_id);
+
+        return $hash;
     }
+
+
+    /**
+     * Look up the scope for a given hash
+     * @param $hash
+     * @return array|null
+     */
+    static function lookupHash($hash) {
+        global $module;
+        $sql = "select log_id, message, project_id, event_id, form_name, record, instance, timestamp where hash = '" . db_real_escape_string($hash) . "'";
+        $q = $module->queryLogs($sql);
+        $count = db_num_rows($q);
+        if ($count == 1) {
+            $result = db_fetch_assoc($q);
+            $module->emDebug("Found result from $hash", $result);
+            return $result;
+        } else {
+            $module->emDebug("Found $count results from $hash", $sql);
+            return null;
+        }
+    }
+
 
     /**
      * Generate a unique hash within the given project / external module

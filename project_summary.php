@@ -14,3 +14,17 @@ echo $twig->render("projectSummary.twig", [
 );
 
 
+
+include_once("REDCapJsRenderer.php");
+
+$rjr = new REDCapJsRenderer();
+
+$result = REDCapJsRenderer::createHash($module->getProjectId(), $module->getFirstEventId(), "survey");
+
+echo "<pre>";
+echo "Made $result \n";
+
+
+$result2 = REDCapJsRenderer::lookupHash( $result);
+
+echo print_r($result2,true);
