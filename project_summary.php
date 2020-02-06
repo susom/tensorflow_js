@@ -19,12 +19,13 @@ include_once("REDCapJsRenderer.php");
 
 $rjr = new REDCapJsRenderer();
 
-$result = REDCapJsRenderer::createHash($module->getProjectId(), $module->getFirstEventId(), "survey");
+$hash = REDCapJsRenderer::createHash($module->getProjectId(), $module->getFirstEventId(), "survey", "1");
 
 echo "<pre>";
-echo "Made $result \n";
+echo "Made $hash \n";
 
-
-$result2 = REDCapJsRenderer::lookupHash( $result);
-
+$result2 = REDCapJsRenderer::lookupHash( $hash );
 echo print_r($result2,true);
+
+$result3 = REDCapJsRenderer::getMetadata( $hash);
+echo print_r($result3,true);
