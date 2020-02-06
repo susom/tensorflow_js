@@ -92,9 +92,21 @@ class REDCapJsRenderer
         return $log_id;
     }
 
+    /**
+     * Generate a unique hash within the given project / external module
+     * @param $project_id
+     * @return string
+     */
     static function getUniqueHash($project_id) {
-        // todo: make sure it is unique
-        $hash = generateRandomHash(21);
+        global $module;
+
+        do{
+            $hash = generateRandomHash(21);
+            $q = $module->queryLogs("select log_id where message = '" . mysqli_escape_string($hash) . "' and project_id = $project_id");
+            $count = mysqli_num_rows($q);
+            $module->emDebug("Found $count rows with $hash in project $project_id");
+        } while ($count > 0);
+
         return $hash;
     }
 
