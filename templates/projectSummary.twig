@@ -3,12 +3,6 @@
 {% block title %}Project Summary{% endblock %}
 
 {% block body %}
-    <a href="{{ modelUrl }}" class="btn btn-primary"></a>
-
-{% endblock %}
-
-{% block jsFooter %}
-    {{ parent() }}
     <main>
         <section class="jumbotron text-center">
             <div class="container">
@@ -22,4 +16,8 @@
             </div>
         </section>
     </main>
+{% endblock %}
+
+{% block jsFooter %}
+    {{ parent() }}
 {% endblock %}

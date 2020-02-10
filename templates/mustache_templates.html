@@ -1,8 +1,85 @@
 {% raw %}
 
+<!--
+project_id: "17"
+field_name: "participant_id"
+field_phi: null
+form_name: "survey"
+form_menu_description: "Example Survey"
+field_order: "1"
+field_units: null
+element_preceding_header: null
+element_type: "text"
+element_label: "Participant ID"
+element_enum: null
+element_note: null
+element_validation_type: null
+element_validation_min: null
+element_validation_max: null
+element_validation_checktype: "soft_typed"
+branching_logic: null
+field_req: "0"
+edoc_id: null
+edoc_display_img: "0"
+custom_alignment: null
+stop_actions: null
+question_num: null
+grid_name: null
+grid_rank: "0"
+misc: null
+video_url: null
+video_display_inline: "0"
+current_value: "1"
+-->
+
 <!--These are Mustache templates to be used by the REDCap Renderer-->
-<script id="template" type="x-tmpl-mustache">
-    Hello {{ name }}!
+<script id="template_radio" type="text/html">
+    <div class="form-group ml-3 mb-5" data-field_name="{{field_name}}">
+    {{#element_enum_array}}
+        <div class="custom-control custom-radio">
+            <input id="{{ field_name }}__{{ index }}" name="{{ field_name }}" type="radio" class="custom-control-input" value="{{key}}" {{selected}}>
+            <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{val}}</label>
+        </div>
+    {{/element_enum_array}}
+    </div>
 </script>
 
-{% endraw %}}
+<script id="template_checkbox" type="text/html">
+    <div class="form-group  ml-3 mb-5" data-field_name="{{field_name}}">
+    {{#element_enum_array}}
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input form-control"  id="{{ field_name }}__{{ index }}" name="{{ field_name }}"  value="{{key}}" {{selected}}>
+            <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{ val }}</label>
+        </div>
+    {{/element_enum_array}}
+    </div>
+</script>
+
+<script id="template_text" type="text/html">
+     <div class="form-group  col-md-8 mb-5" data-field_name="{{field_name}}">
+        <label for="{{ field_name }}">{{ element_label }}</label>
+        <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}">
+     </div>
+</script>
+
+<script id="template_textarea" type="text/html">
+    <div class="form-group col-md-8  mb-5" data-field_name="{{field_name}}">
+        <label for="{{ field_name }}">{{ element_label }}</label>
+        <textarea class="form-control" id="{{ field_name }}" name="{{ field_name }}" placeholder="">{{ current_value }}</textarea>
+    </div>
+</script>
+
+<script id="template_select" type="text/html">
+    <div class="form-group col-md-8 mb-5" data-field_name="{{field_name}}">
+        <label for="{{ field_name }}">{{ element_label }}</label>
+        <select class="form-control" id="{{ field_name }}" name="{{ field_name }}">
+            {{#element_enum_array}}
+                <option value="{{key}}" {{selected}}>{{val}}</option>
+            {{/element_enum_array}}
+        </select>
+    </div>
+</script>
+
+
+
+{% endraw %}

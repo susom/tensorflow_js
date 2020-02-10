@@ -23,7 +23,8 @@
 	"enable-every-page-hooks-on-system-pages": false,	
 
 	"noauth-pages": [
-		"modal"
+		"modal",
+		"model"
 	],
 
 	"links": {
@@ -42,10 +43,6 @@
 			}
 		]
 	},
-
-	"no-auth-pages": [
-		"model"
-	],
 
 	"system-settings": [
 		{

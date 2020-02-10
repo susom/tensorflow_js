@@ -1,25 +1,20 @@
 {% extends "base.twig" %}
 
-{% block title %}Model{% endblock %}
+{% block title %}Tensor Flow Model Inputs{% endblock %}
 
 {% block favicon %}
     <link rel="icon" type="image/png" href="https://www.gstatic.com/devrel-devsite/prod/v18acaed6c9e1965881c7cfa6f3f9f69e7c37603f6d253114168821ce9e70c645/tensorflow/images/favicon.png">
 {% endblock %}
 
 {% block body %}
-
     <main>
         <section class="jumbotron text-center">
             <div class="container">
-                <h1 class="jumbotron-heading">REDCap TensorFlow Model</h1>
-                <p class="lead text-muted">
-                    This page shows project settings
-                </p>
+                <h1 class="jumbotron-heading">REDCap Tensor Flow Model Edit</h1>
+                <p class="lead text-muted"></p>
 
                 <div id="tf_controls" class="text-center">
-
                     <div id="tf_upload_div" class="upload_div btn btn-primary" style="text-align: center; display:none;">
-
                         <input type="file" hidden id="tf_upload_input" accept="image/*" capture="environment" />
                         <div class="select-xray">
                             <i class="fas fa-x-ray"></i>
@@ -65,9 +60,7 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </section>
         <section>
@@ -98,7 +91,7 @@
         </div>
     </div>
 
-    <div id="redcap_container" class="container mt-3">
+    <div id="redcap_container" class="container mt-3 border rounded p-5">
 
     </div>
 
@@ -110,7 +103,6 @@
     </div>
 
     {{ include('mustache_templates.html') }}
-
 {% endblock %}
 
 
@@ -127,9 +119,8 @@
 
     <!-- Custom params for this page -->
     <script>
-        RCTF.emSettings = {{ emSettings|raw }};
-
-        REDCapRenderer.context = {{ context|raw }};
+        RCTF.emSettings         = {{ emSettings|raw }};
+        //REDCapRenderer.context  = {{ context|raw }};
 
         $(document).ready(function(){
             RCTF.uploadInput        = $('#tf_upload_input');
@@ -151,9 +142,7 @@
             //     $('#tf_upload_div').show();
             // });
 
-            REDCapRenderer.init();
-
+            REDCapRenderer.init({{ context|raw }});
         });
     </script>
-
 {% endblock %}

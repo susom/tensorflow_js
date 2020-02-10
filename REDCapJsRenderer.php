@@ -206,7 +206,7 @@ class REDCapJsRenderer
                 // Get Data
                 $q = \REDCap::getData($project_id, 'array', $record, $valid_fields, $event_id);
 
-                if (empty($result[$record][$event_id])) {
+                if (empty($q[$record][$event_id])) {
                     $module->emError("Unable to find record $record, event $event_id in query results", $q);
                 } else {
 
