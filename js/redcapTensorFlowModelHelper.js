@@ -1,7 +1,5 @@
 // This is a tensorflow helper object designed to manage all the tensorflow fun!
 var RCTF = {
-
-    modelUrl: "/plugins/models/model.json",
     model: {},
 
     // Do we present a button or just analyze after upload...
@@ -10,15 +8,6 @@ var RCTF = {
     // Jquery reference to upload element
     uploadInput: {},
     uploadImage: {},
-
-    // // labels: [],
-    // labels: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
-    //     'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
-    // ],
-    //
-    // labels_to_show: ['Cardiomegaly', 'Emphysema', 'Effusion', 'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Atelectasis',
-    //     'Pneumothorax', 'Pleural Thickening', 'Pneumonia', 'Fibrosis', 'Edema', 'Consolidation'
-    // ],
 
     // METRICS FOR PREDICTION
     prediction_count: 0,
@@ -31,6 +20,22 @@ var RCTF = {
     // Array of jquery objects to hold progress bars for results
     prediction_elements: [],
 
+    init: function(emSettings) {
+        this.modelUrl   = emSettings["model-url"].value;
+        this.labels     = [];
+
+        var temp        = emSettings["expected-variables"].value.split(",");
+        for(var i in temp){
+            this.labels.push({"feature" : temp[i].trim() , "percentage" : 0});
+        }
+
+
+        var feature_container = $("#prediction-list");
+        var feature_template  = $("#template_feature_prediction").html();
+        var raw_html          = Mustache.render(feature_template, {"features" : this.labels});
+        var row               = $( raw_html );
+        row.appendTo(feature_container);
+    },
 
     loadModelOld: async function() {
         var _this = this;
@@ -54,11 +59,6 @@ var RCTF = {
         _this.stopProgress();
     },
 
-    // log: function(x) {
-    //     log(x);
-    // },
-
-
     // An attempt to cache the model in local storage
     loadModel: async function(callback) {
         var _this = this;
@@ -75,21 +75,15 @@ var RCTF = {
             log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
         }
 
-
-        // Handle the progress div
-        _this.modalDiv = $('#pleaseWaitDialog');
-
         function startProgress() {
-            _this.modalDiv.modal('show');
+            _this.loadingModal.modal('show');
         }
 
         function progress_model_load(p) {
             let percent = Math.round(p * 100);
             let text = "Loading Model (" + percent + "%)...";
-            // log (text);
 
-            var pb = _this.modalDiv.find('.progress-bar');
-            // log(pb);
+            var pb = _this.loadingModal.find('.progress-bar');
             pb
                 .css("width", percent + '%')
                 .attr("aria-valuenow", percent)
@@ -100,12 +94,13 @@ var RCTF = {
 
         function stopProgress() {
             // log('about to StopProgress');
-            _this.modalDiv.modal('hide');
+            _this.loadingModal.modal('hide');
+
             // For some reason, the modal doesn't always hide the first time so I'm adding a double-checker...
             setTimeout( function() {
-                if (_this.modalDiv.hasClass('show')) {
+                if (_this.loadingModal.hasClass('show')) {
                     log('Found a modal with show class - re-remove modal');
-                    _this.modalDiv.modal('hide');
+                    _this.loadingModal.modal('hide');
                 } else {
                     // log('modal closed cleanly');
                 }
@@ -132,7 +127,7 @@ var RCTF = {
 
         // Skipping warmup for testing
         // log('warming up model');
-        // _this.warmUpModel();
+        _this.warmUpModel();
 
         // log('preparingResults');
         // _this.prepareResults();
@@ -142,7 +137,6 @@ var RCTF = {
         }
     },
 
-
     // Actually apply the model to the image data
     predictImage: async function(image_element, callback) {
         var _this = this;
@@ -150,33 +144,18 @@ var RCTF = {
 
         tensor = _this.preprocessImage(image_element);
 
-        var t0 = performance.now();
-        let prediction = _this.model.predict(tensor);
-        let data = prediction.dataSync();
-        var t1 = performance.now();
+        var t0          = performance.now();
+        let prediction  = _this.model.predict(tensor);
+        let data        = prediction.dataSync();
+        var t1          = performance.now();
 
         var new_mean = (_this.prediction_count * _this.prediction_rolling_mean + t1 - t0) / (_this.prediction_count + 1);
 
         _this.prediction_count += 1;
-        _this.prediction_rolling_mean = new_mean;
-        _this.prediction_time = Math.round(_this.prediction_rolling_mean);                 //ms
-        _this.prediction_memory = Math.round(tf.memory()["numBytesInGPU"]/1024/1024);   //MB
-        _this.prediction_data = data;
-
-
-        // $(".prediction-time").text(`Average Prediction Time: ${Math.round(_this.prediction_rolling_mean)} ms`)
-        // $("#memory").text(`GPU Memory: ${Math.round(tf.memory()["numBytesInGPU"]/1024/1024)} MB`);
-
-        // Dump result data into REDcap field:
-        // $('input[name="data"]').val(JSON.stringify(data));
-
-        // // Update the results
-        // for (let i = 0; i < data.length; i++) {
-        //     if (_this.labels_to_show.indexOf(_this.labels[i]) != -1) {
-        //         bar = _this.prediction_elements[i];
-        //         bar.css("width", `${data[i] * 100}%`);
-        //     }
-        // }
+        _this.prediction_rolling_mean   = new_mean;
+        _this.prediction_time           = Math.round(_this.prediction_rolling_mean);                 //ms
+        _this.prediction_memory         = Math.round(tf.memory()["numBytesInGPU"]/1024/1024);   //MB
+        _this.prediction_data           = data;
 
         tf.dispose(prediction);
         tf.dispose(data);
@@ -196,7 +175,6 @@ var RCTF = {
         warmupResult.dataSync();
         tf.dispose(warmupResult);
     },
-
 
     // Prepare image
     preprocessImage: function(image) {
@@ -243,38 +221,54 @@ var RCTF = {
                 _this.prediction_elements[i].parent().parent().parent().hide();
             }
         }
-
     },
 
     runModelOnImage: function() {
         var _this = this;
         log("Starting runModelOnImage");
 
-        // $('.prediction').show();
-        // // Set bars to zero
-        // for (let i = 0; i < _this.labels_to_show.length; i++) {
-        //     let bar = _this.prediction_elements[i];
-        //     bar.css("width", `0%`);
-        // }
-
         _this.predictImage(_this.uploadImage[0], function() {
             log("Done with runModelOnImage");
             _this.analysisInProgress.hide();
             // $('#tf_analyzing').hide();
 
-            _this.analysisDone
-                .append($("<div class='prediction_time'/>")
-                    .text(`Average Prediction Time: ${_this.prediction_time} ms`))
-                .append($("<div class='prediction_memory'/>")
-                    .text(`GPU Memory: ${_this.prediction_memory} MB`))
-                .show();
+            // show some prediction detail data
+            $(".prediction_time").text(_this.prediction_time + "ms");
+            $(".prediction_memory").text(_this.prediction_memory + "MB");
+            $(".prediction_details").addClass("temp_show_remove_on_clear");
+            _this.analysisDone.addClass("temp_show_remove_on_clear").fadeIn();
 
-            _this.resultsDiv.text(JSON.stringify(_this.prediction_data));
+            // update visual graph of prediction percentages by feature
+            _this.updateFeaturePredictions(_this.prediction_data);
 
+            // fill in form field for model results - raw json
+            var stringify_results = JSON.stringify(_this.prediction_data);
+            $("#model_results").val(stringify_results);
+            $("#base64_image").val(_this.uploadImage.attr("src"));
         });
-
     },
 
+    updateFeaturePredictions : function(prediction_list){
+        var _this = this;
+        for(var i in prediction_list){
+            var prediction_perc = prediction_list[i]*100;
+            var data_label      = _this.labels[i]["feature"];
+
+            var textclass = "text-dark";
+            if(prediction_perc > 85){
+                textclass="text-white";
+            }
+            _this.predictionBarScaledTimeout(i, data_label, prediction_perc, textclass);
+        }
+    },
+
+    predictionBarScaledTimeout : function(i, data_label,prediction_perc,textclass){
+        setTimeout(function(){
+            var inline_text = Math.round(prediction_perc)+"%";
+            var text_ele = $("<span>").html(inline_text).addClass(textclass).addClass("pr-1");
+            $(".progress-bar[data-feature='"+data_label+"']").css("width",inline_text).append(text_ele);
+        }, i*220);
+    },
 
     // Bind readURL function to changes in the input
     // TODO: Add error handling
@@ -302,7 +296,6 @@ var RCTF = {
         });
     },
 
-
     // Reads the inputs and on completion calls the callback method
     readURL: function(uploadInput, destImage, callback) {
         var _this = this;
@@ -324,7 +317,6 @@ var RCTF = {
         }
     },
 
-
     previewImage: function(result) {
         var _this = this;
 
@@ -344,7 +336,6 @@ var RCTF = {
             // Show options for doing analysis
             _this.analysisBtn.show(0);
         }
-
 
         // Auto-run model on image with short delay to allow upload image to redraw
         // setTimeout(function() {

@@ -61,14 +61,14 @@ class REDCapJsRenderer
         if (empty($record)) {
             // This was a 'public' hash so we have to create a record-specific hash now
             $nextRecord = getautoid($project_id, false);
-            $newHash = self::createHash($project_id, $event_id, $form_name, $nextRecord, $instance);
+            $newHash    = self::createHash($project_id, $event_id, $form_name, $nextRecord, $instance);
             $module->emDebug("Creating new record: $nextRecord with new hash $newHash");
         }
 
         // Do we save all at once or one at a time?  Presumably all at once for speed?
-        $fields = [];
-        $valid_fields = self::getValidFields($project_id,$event_id,$form_name);
-        $saveFields = [];
+//        $fields         = [];
+        $valid_fields   = self::getValidFields($project_id,$event_id,$form_name);
+        $saveFields     = [];
         foreach ($fields as $field_name => $field_values) {
 
             // Make sure the field is valid
@@ -110,12 +110,13 @@ class REDCapJsRenderer
      */
     private static function getValidFields($project_id, $event_id, $form_name) {
         // Get the project object
-        global $Proj;
+        global $Proj, $module;
         $_Proj = $Proj->project_id == $project_id ? $Proj : new \Project($project_id);
 
         // Let's assemble an array of valid fields for this form, starting with event_id:
         $valid_fields = \REDCap::getValidFieldsByEvents($project_id, $event_id);
 
+        $module->emDebug("hey ladies shut uip",$valid_fields);
         // If we have a form, then let's also filter fields by form
         if (!empty($form_name)) {
             $form_fields = \REDCap::getFieldNames($form_name);
@@ -299,9 +300,9 @@ class REDCapJsRenderer
      */
     static function lookupHash($hash) {
         global $module;
-        $sql = "select log_id, message, project_id, event_id, form_name, record, instance, timestamp where hash = '" . db_real_escape_string($hash) . "'";
-        $q = $module->queryLogs($sql);
-        $count = db_num_rows($q);
+        $sql    = "select log_id, message, project_id, event_id, form_name, record, instance, timestamp where hash = '" . db_real_escape_string($hash) . "'";
+        $q      = $module->queryLogs($sql);
+        $count  = db_num_rows($q);
         if ($count == 1) {
             $result = db_fetch_assoc($q);
             $module->emDebug("Found result from $hash", $result);
@@ -322,9 +323,9 @@ class REDCapJsRenderer
         global $module;
 
         do{
-            $hash = generateRandomHash(21);
-            $q = $module->queryLogs("select log_id where message = '" . mysqli_escape_string($hash) . "' and project_id = $project_id");
-            $count = mysqli_num_rows($q);
+            $hash   = generateRandomHash(21);
+            $q      = $module->queryLogs("select log_id where message = '" . mysqli_escape_string($hash) . "' and project_id = $project_id");
+            $count  = mysqli_num_rows($q);
             $module->emDebug("Found $count rows with $hash in project $project_id");
         } while ($count > 0);
 

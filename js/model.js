@@ -38,23 +38,31 @@ function REDCapField(metadata) {
 
 REDCapField.prototype.insertRow = function(container) {
     let row = $( this.getRow() );
+    this.bindEvent(row);
     row.appendTo(container);
 };
 
 REDCapField.prototype.getRow = function(format) {
-    //templates are injected (hidden) into the HTML and reused throughout
-    var m_template_type =  "#template_" + this.metadata.element_type;
+    //templates are injected (hidden) into the HTML and reused throughout , referenced to by #id
 
+    // yn and tf types are just radio
+    var template_suffix = this.metadata.element_type;
+    if(template_suffix == "yesno" || template_suffix == "truefalse"){
+        template_suffix = "radio";
+    }
+
+    var m_template_type =  "#template_" + template_suffix;
     if($(m_template_type).length){
         var m_template  = $(m_template_type).html();
+        var m_nested    = $("#template_nested_top").html();
 
-        /* radio/checkboxes/selects require extra steps to extract
-           options/current values which absurdly can be an {}, [] or String */
+        /* radio/checkboxes/selects require extra steps to extract options which are "\\n" delimited strings and need massaging
+           ... current values absurdly can be an {}, [] or String */
         var enum_result = [];
         if(this.metadata.element_enum !== null) {
             var temp = this.metadata.element_enum.split("\\n");
             for (var i in temp) {
-                i = parseInt(i);  //the # index is a "string"?  make it an int.
+                i           = parseInt(i);  //the # index is a "string"?  make it an int.
                 var txt     = temp[i];
                 var comma   = txt.indexOf(",");
                 var label   = txt.substr(0, comma);
@@ -65,11 +73,11 @@ REDCapField.prototype.getRow = function(format) {
                 var hot              = false;
 
                 if(Array.isArray(curval) || typeof(curval) == "object"){
-                    //if [] or {} use the current index value will have be non null
-                    hot = Array.isArray(curval) ? parseInt(this.metadata.current_value[i]) : parseInt(this.metadata.current_value[i+1]);
+                    //if [] or {} using the current index value will have be non null if active
+                    hot = Array.isArray(curval) ? parseInt(curval[i]) : parseInt(curval[i+1]);
                 }else {
-                    //if string, then we have to match against label value
-                    if (label == parseInt(this.metadata.current_value)) {
+                    //if string, then we have to match against label value per iteration
+                    if (label == parseInt(curval)) {
                         hot = true;
                     }
                 }
@@ -84,30 +92,62 @@ REDCapField.prototype.getRow = function(format) {
         //push a new property for multi option inputs
         this.metadata["element_enum_array"] = enum_result;
 
-        return Mustache.render(m_template,this.metadata);
+        // possible to do nested template?
+        // this.metadata.nested =  renderNested(m_nested, function(data){
+        //    return {element_preceding_header : data.element_preceding_header, form_menu_description : data.form_menu_description }
+        // });
+
+        return Mustache.render(m_template, this.metadata);
     }else{
-        console.log("this field type is not supported yet");
+        console.log("The field type [",this.metadata.element_type,"] is not supported yet");
     }
 };
 
-REDCapField.prototype.getLabel = function() {
-    return this.element_label;
-};
+REDCapField.prototype.bindEvent = function(element){
+    // Each created field will need to have an event binding for hijacking default behavior
+    var hash = this.metadata.hash;
 
-REDCapField.prototype.getInput = function() {
-    return 'foo';
-};
+    element.find(":input").change(function(e){
+        var input_value     = $(this).val();
+        var input_field     = $(this).attr("name");
+
+        //start spinner
+
+        return false;
+        // FIGURE OUT GRANULAR SAVE AFTER REGULAR SAVE
+        // THEN PROTECTED SAVE
+        $.ajax({
+            method: 'POST',
+            data: {
+                "action": "save",
+                "hash"  : hash,
+                "input_value"  : input_value,
+                "input_field"  : input_field
+            },
+            dataType: 'json'
+        }).done(function(result) {
+            //remove spinner
+            console.log(result);
+
+            //update all :inputs with a new record hash
+        });
+
+        e.preventDefault();
+    });
+    return;
+}
 
 REDCapRenderer = {
     context : {},
     pid     : "",
     event   : "",
     instance: "",
-    hash    : "",
+    new_record_hash : "",
+    record_hash :"",
+    record_id   : "",
     metadata: {},
     fields  : {},
     exclude : ["survey_complete"],
-
 
     init: function(context) {
         this.context    = context;
@@ -115,7 +155,6 @@ REDCapRenderer = {
         this.event      = context.event;
         this.instance   = context.instance;
         this.hash       = context.hash;
-        console.log(context);
         this.getMetadata();
     },
 
@@ -146,6 +185,7 @@ REDCapRenderer = {
                continue;
             }
             this.fields[field_name] = new REDCapField(this.metadata[field_name]);
+            this.fields[field_name]["metadata"]["hash"] = this.hash;
         }
     },
 
@@ -154,6 +194,17 @@ REDCapRenderer = {
         for (const field in this.fields) {
             this.fields[field].insertRow(container);
         }
-    }
+    },
 
+    clearForm: function(){
+
+    },
+
+    saveForm: function(){
+
+    },
+
+    getRecordHash: function(){
+
+    }
 };

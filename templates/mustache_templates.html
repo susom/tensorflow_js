@@ -1,85 +1,148 @@
 {% raw %}
 
-<!--
-project_id: "17"
-field_name: "participant_id"
-field_phi: null
-form_name: "survey"
-form_menu_description: "Example Survey"
-field_order: "1"
-field_units: null
-element_preceding_header: null
-element_type: "text"
-element_label: "Participant ID"
-element_enum: null
-element_note: null
-element_validation_type: null
-element_validation_min: null
-element_validation_max: null
-element_validation_checktype: "soft_typed"
-branching_logic: null
-field_req: "0"
-edoc_id: null
-edoc_display_img: "0"
-custom_alignment: null
-stop_actions: null
-question_num: null
-grid_name: null
-grid_rank: "0"
-misc: null
-video_url: null
-video_display_inline: "0"
-current_value: "1"
--->
-
 <!--These are Mustache templates to be used by the REDCap Renderer-->
 <script id="template_radio" type="text/html">
-    <div class="form-group ml-3 mb-5" data-field_name="{{field_name}}">
-    {{#element_enum_array}}
-        <div class="custom-control custom-radio">
-            <input id="{{ field_name }}__{{ index }}" name="{{ field_name }}" type="radio" class="custom-control-input" value="{{key}}" {{selected}}>
-            <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{val}}</label>
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
         </div>
-    {{/element_enum_array}}
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="form-group col-md mb-5" data-field_name="{{field_name}}">
+        {{#element_label}}
+            <p class="h6 mb-3 ">{{ element_label }}</p>
+        {{/element_label}}
+
+        {{#element_enum_array}}
+            <div class="custom-control custom-radio">
+                <input id="{{ field_name }}__{{ index }}" name="{{ field_name }}" type="radio" class="custom-control-input" value="{{key}}" {{selected}}
+                       data-hash="{{hash}}" >
+                <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{val}}</label>
+            </div>
+        {{/element_enum_array}}
+        <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 
 <script id="template_checkbox" type="text/html">
-    <div class="form-group  ml-3 mb-5" data-field_name="{{field_name}}">
-    {{#element_enum_array}}
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input form-control"  id="{{ field_name }}__{{ index }}" name="{{ field_name }}"  value="{{key}}" {{selected}}>
-            <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{ val }}</label>
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
         </div>
-    {{/element_enum_array}}
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
+        {{#element_label}}
+            <p class="h6 mb-3">{{ element_label }}</p>
+        {{/element_label}}
+
+        {{#element_enum_array}}
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input form-control"  id="{{ field_name }}__{{ index }}" name="{{ field_name }}"  value="{{key}}" {{selected}}>
+                <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{ val }}</label>
+            </div>
+        {{/element_enum_array}}
+        <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 
 <script id="template_text" type="text/html">
-     <div class="form-group  col-md-8 mb-5" data-field_name="{{field_name}}">
-        <label for="{{ field_name }}">{{ element_label }}</label>
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+     <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
+        <label class="h6" for="{{ field_name }}">{{ element_label }}</label>
         <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}">
+        <div class="invalid-feedback">Invalid Input</div>
      </div>
 </script>
 
 <script id="template_textarea" type="text/html">
-    <div class="form-group col-md-8  mb-5" data-field_name="{{field_name}}">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="form-group col-md  mb-5" data-field_name="{{field_name}}">
         <label for="{{ field_name }}">{{ element_label }}</label>
         <textarea class="form-control" id="{{ field_name }}" name="{{ field_name }}" placeholder="">{{ current_value }}</textarea>
+        <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 
 <script id="template_select" type="text/html">
-    <div class="form-group col-md-8 mb-5" data-field_name="{{field_name}}">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="form-group col-md mb-5" data-field_name="{{field_name}}">
         <label for="{{ field_name }}">{{ element_label }}</label>
         <select class="form-control" id="{{ field_name }}" name="{{ field_name }}">
             {{#element_enum_array}}
                 <option value="{{key}}" {{selected}}>{{val}}</option>
             {{/element_enum_array}}
         </select>
+        <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 
+<script id="template_descriptive" type="text/html">
+    <blockquote class="blockquote text-left my-5 mx-1">
+        <p class="mb-0">{{ element_label }}</p>
+    </blockquote>
+</script>
 
+<script id="template_nested_top" type="text/html">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+</script>
+
+<script id="template_feature_prediction" type="text/html">
+    {{#features}}
+    <div class="row mb-2">
+        <div class="col-4">
+            <span class="label text-nowrap">{{feature}}</span>
+        </div>
+        <div class="col-8">
+            <div class="progress mb-2 bg-light" style="min-height:22px; ">
+                <div class="progress-bar rounded text-right bg-warning" data-feature="{{feature}}" role="progressbar" style="width: {{percentage}}%"></div>
+            </div>
+        </div>
+    </div>
+    {{/features}}
+</script>
 
 {% endraw %}

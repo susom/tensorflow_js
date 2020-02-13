@@ -2,109 +2,129 @@
 
 {% block title %}Tensor Flow Model Inputs{% endblock %}
 
+{% block head %}
+    {{ parent() }}
+    <style>
+    #tf_upload_div{
+        margin-top:50%;
+    }
+    .prediction_details{
+        font-size:77%;
+    }
+    #tf_analysis_done, .prediction_details{
+        opacity:0;
+        transition:.2s opacity ease-in;
+    }
+    #tf_analysis_done.temp_show_remove_on_clear, .prediction_details.temp_show_remove_on_clear{
+        opacity:1;
+    }
+
+    #prediction-list .label{
+        font-size:92%;
+    }
+    #prediction-list .progress-bar{
+        transition:.45s width ease-in-out;
+    }
+    </style>
+{% endblock %}
+
 {% block favicon %}
     <link rel="icon" type="image/png" href="https://www.gstatic.com/devrel-devsite/prod/v18acaed6c9e1965881c7cfa6f3f9f69e7c37603f6d253114168821ce9e70c645/tensorflow/images/favicon.png">
 {% endblock %}
 
 {% block body %}
     <main>
-        <section class="jumbotron text-center">
+        <section class="bg-dark pt-5 pb-3 mb-5">
             <div class="container">
-                <h1 class="jumbotron-heading">REDCap Tensor Flow Model Edit</h1>
-                <p class="lead text-muted"></p>
+                <h1 class="jumbotron-heading text-white">REDCap TensorFlowJS Module</h1>
+                <p class="lead text-white">Select an image and apply a pre-trained model.</p>
+            </div>
+        </section>
 
-                <div id="tf_controls" class="text-center">
-                    <div id="tf_upload_div" class="upload_div btn btn-primary" style="text-align: center; display:none;">
-                        <input type="file" hidden id="tf_upload_input" accept="image/*" capture="environment" />
-                        <div class="select-xray">
-                            <i class="fas fa-x-ray"></i>
-                            Select X-ray Image
+        <section class="container">
+            <div class="row">
+                <div class="col-md-6 border rounded bg-light">
+                    <div id="tf_controls" class="text-center">
+
+                        <div id="tf_upload_div" class="upload_div btn btn-primary text-center my-2" style="display:none">
+                            <input type="file" hidden id="tf_upload_input" accept="image/*" capture="environment" />
+                            <div class="select-xray">
+                                <i class="fas fa-x-ray"></i>
+                                Select X-ray Image
+                            </div>
                         </div>
-                    </div>
 
-                    <div class='text-center' style='margin:auto;'>
-                        <img id="tf_upload_image" width="320" height="320" class="img-thumbnail" style="display:none;"/>
-                    </div>
-
-                    <div id="tf_analyze" class="btn btn-primary" style="text-align: center; display:none;">
-                        <div class="start">
-                            <i class="fas fa-chart-bar"></i>
-                            Analyze Image
+                        <div class='text-center mx-auto' style='min-height:500px;'>
+                            <img id="tf_upload_image" class="img-thumbnail" style="display:none;"/>
                         </div>
-                    </div>
 
-                    <div id="tf_analyzing" class="btn btn-primary" style="text-align: center; display:none;">
-                        <div class="running">
-                            <i class="fas fa-spinner fa-pulse"></i>
-                            Analyzing...
+                        <div id="tf_analyze" class="btn btn-primary" style="text-align: center; display:none;">
+                            <div class="start">
+                                <i class="fas fa-chart-bar"></i>
+                                Analyze Image
+                            </div>
                         </div>
-                    </div>
-
-                    <pre id="tf_results">
-                    </pre>
-
-                    <div class = "prediction" style="width: 100%; display:none;">
-                        <h4>Prediction</h4>
-                        <div class="prediction-results">
-                            <div id="prediction-list" style="width: 100%; padding-right: 20px">
-                                <div class="row prediction-template" hidden>
-                                    <div class="col-4">
-                                        <span class="label"></span>
-                                    </div>
-                                    <div class="col-8">
-                                        <div class="progress mb-2">
-                                            <div class="progress-bar" role="progressbar"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div id="tf_analyzing" class="btn btn-primary" style="text-align: center; display:none;">
+                            <div class="running">
+                                <i class="fas fa-spinner fa-pulse" ></i>
+                                Analyzing...
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <section>
-            <div class="container">
-                <div id="tf_analysis_done" class="" style="text-align: center; display:none;">
-                    <i class="fas fa-check-circle"></i>
-                    Analysis Done
+                <div class="col-md-6">
+                    <pre id="tf_results" class="d-none">
+
+                    </pre>
+
+                    <div class ="prediction px-4">
+                        <div class="text-center py-2 mt-1 mb-4">
+                            <h4><i id="tf_analysis_done" class="fas fa-check-circle" style="color:green"></i> Prediction - Feature Composition</h4>
+                            <div class="prediction_details text-muted"><em>Average Prediction Time:</em> <b class="prediction_time"></b> | <em>GPU Memory:</em> <b class="prediction_memory"></b></div>
+                        </div>
+                        <div id="prediction-list" class="prediction-results">
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <hr class="m-5 mx-auto container bg-light"/>
+
+        <form id="redcap_form" class="container mt-5">
+            <div id="redcap_container">
+
+            </div>
+            <input type="hidden" name="record_hash" value="{{ hash }}"/>
+            <button class="btn btn-primary mce-btn-large" type="submit">Save Observations</button>
+        </form>
+
     </main>
 
-    <div class="modal" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal" id="modelLoadingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3><i class="fas fa-spinner fa-pulse"></i> Loading Model...</h3>
                 </div>
-                <div class="modal-body">
-                    <div class="progress" style="width:100%;">
-                        <div class="progress-bar progress-bar-success progress-bar-striped pl-2" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-                            <span></span>
-                            <span class="sr-only"></span>
-                        </div>
-                    </div>
+                <div class="modal-body rounded">
+{#                    <div class="progress" style="width:100%;">#}
+{#                        <div class="progress-bar progress-bar-success progress-bar-striped pl-2" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">#}
+{#                            <span></span>#}
+{#                            <span class="sr-only"></span>#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="redcap_container" class="container mt-3 border rounded p-5">
 
-    </div>
 
-    <div class="container mt-3" >
-        <div class="row post-model">
-        </div>
-        <div style="color: darkgrey" id="memory"></div>
-        <div style="color: darkgrey" class="prediction-time"></div>
-    </div>
 
     {{ include('mustache_templates.html') }}
 {% endblock %}
-
 
 {% block jsFooter %}
     {{ parent() }}
@@ -119,30 +139,59 @@
 
     <!-- Custom params for this page -->
     <script>
-        RCTF.emSettings         = {{ emSettings|raw }};
-        //REDCapRenderer.context  = {{ context|raw }};
-
         $(document).ready(function(){
+            var emsettings = {{ emSettings|raw }};
+            RCTF.init(emsettings);
+
+            //Better to do it here on the page with the HTML in it
             RCTF.uploadInput        = $('#tf_upload_input');
             RCTF.uploadImage        = $('#tf_upload_image');
             RCTF.analysisBtn        = $('#tf_analyze');
             RCTF.analysisInProgress = $('#tf_analyzing');
             RCTF.analysisDone       = $('#tf_analysis_done');
             RCTF.resultsDiv         = $('#tf_results');
+            RCTF.loadingModal       = $('#modelLoadingModal');
             RCTF.bindEvents();
 
-            // Capture click on image
+            // Capture click on image and activate hidden input
             $('.select-xray').click(function() {
-                log('select_clicked');
                 RCTF.uploadInput.click();
             });
 
-            // Load the model
-            // RCTF.loadModel(function() {
-            //     $('#tf_upload_div').show();
-            // });
+            // Load the model, then show upload button
+            RCTF.loadModel(function() {
+                $('#tf_upload_div').show();
+            });
 
-            REDCapRenderer.init({{ context|raw }});
+            // first lets just save data, then we can figure out granular methods and hashes
+            $("#redcap_form").submit(function(e){
+                var the_form    = $(this);
+                var record_hash = $("input[name='record_hash']").val();
+                console.log(the_form);
+
+                $.ajax({
+                    method: 'POST',
+                    data: {
+                        "action": "saveAll",
+                        "hash"  : record_hash,
+                        "data"  : the_form.serializeArray(),
+                    },
+                    dataType: 'json'
+                }).done(function(result) {
+                    //remove spinner
+                    console.log(result);
+
+                    //update all :inputs with a new record hash
+                });
+
+
+                e.preventDefault();
+            });
+
+            //pass info required to download project's survey metadata
+            var context = {{ context|raw }};
+            // console.log(context, emsettings);
+            REDCapRenderer.init(context);
         });
     </script>
 {% endblock %}
