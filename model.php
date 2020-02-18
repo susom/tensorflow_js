@@ -14,11 +14,28 @@ if(!empty($_POST['action'])) {
             $response = REDCapJsRenderer::getMetadata($hash);
             break;
 
-        case "save":
-            // IF first_save , need to create new record and return that hash
+        case "getRecordHash":
+            //check if hash is "new record" or "existing record"
+            $result     = REDCapJsRenderer::lookupHash($hash);
+            $project_id = $result["project_id"];
+            $event_id   = $result["event_id"];
 
+            if(!is_null($result["record"])){
+                //if existing return existing hash and record_id
+                $record_id      = $result["record"];
+                $record_hash    = $hash;
+            }else{
+                //need to create record and get new hash from there
+                $record_id      = REDCapJsRenderer::getNextRecordId($project_id);
+                $record_hash    = REDCapJsRenderer::createHash($project_id, $record_id, $event_id);
+                $result         = REDCapJsRenderer::lookupHash($record_hash);
+            }
+
+            $response = array("record_id" => $record_id, "record_hash" => $record_hash, "showme" => $result);
+            break;
+
+        case "saveField":
             // IF update_record : use hash supplied by element.
-
             $input_value = filter_var($_POST['input_value'], FILTER_SANITIZE_STRING);
             $input_field = filter_var($_POST['input_field'], FILTER_SANITIZE_STRING);
 
@@ -29,8 +46,7 @@ if(!empty($_POST['action'])) {
                 )
             );
 
-            $response = $data;
-//            $response = REDCapJsRenderer::saveData($data);
+            $response = REDCapJsRenderer::saveData($data);
             break;
 
         case "saveAll":
@@ -67,29 +83,27 @@ $loader = new \Twig_Loader_Filesystem(__DIR__."/templates/");
 $twig   = new \Twig_Environment($loader);
 
 // Additional javascript sources
-$sources    = [
+$js_ssources    = [
     $module->getUrl('js/consolelog.js',true,true),
     $module->getUrl('js/redcapTensorFlowModelHelper.js', true, true),
-    $module->getUrl('js/model.js', true, true),
-    $module->getUrl('js/functions.js', true, true)
+    $module->getUrl('js/redcapForm.js', true, true),
 ];
 
-$edit_record_hash   = "8Ru7qRURrcZR6aqMKGSES";
+//$edit_record_hash   = "8Ru7qRURrcZR6aqMKGSES";
 $emSettings         = $module->getProjectSettings();
 $project_id         = $module->getProjectId();
 $new_record_hash    = REDCapJsRenderer::createHash($project_id);
 
-$context = [
-    'pid'       => $project_id,
-    'event'     => $module->getFirstEventId($project_id),
-    'instance'  => 1,
-    'hash'      => $new_record_hash
+$rcjs_renderer_config = [
+     'new_hash'         => $new_record_hash
+    ,'exclude_fields'   => array("survey_complete")
+    ,'readonly'         => array("participant_id", "base64_image", "model_results")
+    ,'metadata'         => REDCapJsRenderer::getMetadata($new_record_hash)
 ];
 
 echo $twig->render("model.twig", [
-        "sources"    => $sources,
-        "emSettings" => json_encode($emSettings),
-        "context"    => json_encode($context),
-        "hash"       => $new_record_hash
+        "sources"           => $js_ssources,
+        "emSettings"        => json_encode($emSettings),
+        "renderer_config"   => json_encode($rcjs_renderer_config),
     ]
 );

@@ -17,8 +17,7 @@ echo $twig->render("projectSummary.twig", [
 
 include_once("REDCapJsRenderer.php");
 
-//$hash = REDCapJsRenderer::createHash($module->getProjectId(), $module->getFirstEventId(), "survey");
-$hash = REDCapJsRenderer::createHash($module->getProjectId(), $module->getFirstEventId(), "survey", "1");
+$hash = REDCapJsRenderer::createHash($module->getProjectId(), "1", $module->getFirstEventId(), "survey" );
 
 echo "<pre>";
 echo "Made $hash \n";

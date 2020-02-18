@@ -1,6 +1,65 @@
 {% raw %}
 
 <!--These are Mustache templates to be used by the REDCap Renderer-->
+<script id="template_text" type="text/html">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+        <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
+        <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
+        <div class="invalid-feedback">Invalid Input</div>
+    </div>
+</script>
+
+<script id="template_textarea" type="text/html">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
+        <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
+        <textarea class="form-control" id="{{ field_name }}" name="{{ field_name }}" placeholder="" {{readonly}}>{{ current_value }}</textarea>
+        <div class="invalid-feedback">Invalid Input</div>
+    </div>
+</script>
+
+<script id="template_select" type="text/html">
+    {{#element_preceding_header}}
+        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+            <h6>{{ element_preceding_header }}</h6>
+        </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
+        <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
+
+        <select class="form-control" id="{{ field_name }}" name="{{ field_name }}" {{readonly}}>
+            {{#element_enum_array}}
+            <option value="{{key}}" {{selected}}>{{val}}</option>
+            {{/element_enum_array}}
+        </select>
+        <div class="invalid-feedback">Invalid Input</div>
+    </div>
+</script>
+
 <script id="template_radio" type="text/html">
     {{#element_preceding_header}}
         <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
@@ -12,15 +71,14 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="form-group col-md mb-5" data-field_name="{{field_name}}">
+    <div class="bmd-form-group col-md mb-5" data-field_name="{{field_name}}">
         {{#element_label}}
-            <p class="h6 mb-3 ">{{ element_label }}</p>
+            <p class="h6 mb-3 "><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</p>
         {{/element_label}}
 
         {{#element_enum_array}}
             <div class="custom-control custom-radio">
-                <input id="{{ field_name }}__{{ index }}" name="{{ field_name }}" type="radio" class="custom-control-input" value="{{key}}" {{selected}}
-                       data-hash="{{hash}}" >
+                <input id="{{ field_name }}__{{ index }}" name="{{ field_name }}" type="radio" class="custom-control-input" value="{{key}}" {{selected}}  {{readonly}}>
                 <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{val}}</label>
             </div>
         {{/element_enum_array}}
@@ -39,14 +97,14 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
+    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
         {{#element_label}}
-            <p class="h6 mb-3">{{ element_label }}</p>
+            <p class="h6 mb-3"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</p>
         {{/element_label}}
 
         {{#element_enum_array}}
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input form-control"  id="{{ field_name }}__{{ index }}" name="{{ field_name }}"  value="{{key}}" {{selected}}>
+                <input type="checkbox" class="custom-control-input form-control"  id="{{ field_name }}__{{ index }}" name="{{ field_name }}"  value="{{key}}" {{selected}} {{readonly}}>
                 <label class="custom-control-label" for="{{ field_name }}__{{ index }}">{{ val }}</label>
             </div>
         {{/element_enum_array}}
@@ -54,79 +112,24 @@
     </div>
 </script>
 
-<script id="template_text" type="text/html">
-    {{#element_preceding_header}}
-        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
-            <h6>{{ element_preceding_header }}</h6>
-        </div>
-    {{/element_preceding_header}}
-
-    {{#form_menu_description}}
-        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
-    {{/form_menu_description}}
-
-     <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
-        <label class="h6" for="{{ field_name }}">{{ element_label }}</label>
-        <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}">
-        <div class="invalid-feedback">Invalid Input</div>
-     </div>
-</script>
-
-<script id="template_textarea" type="text/html">
-    {{#element_preceding_header}}
-        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
-            <h6>{{ element_preceding_header }}</h6>
-        </div>
-    {{/element_preceding_header}}
-
-    {{#form_menu_description}}
-        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
-    {{/form_menu_description}}
-
-    <div class="form-group col-md  mb-5" data-field_name="{{field_name}}">
-        <label for="{{ field_name }}">{{ element_label }}</label>
-        <textarea class="form-control" id="{{ field_name }}" name="{{ field_name }}" placeholder="">{{ current_value }}</textarea>
-        <div class="invalid-feedback">Invalid Input</div>
-    </div>
-</script>
-
-<script id="template_select" type="text/html">
-    {{#element_preceding_header}}
-        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
-            <h6>{{ element_preceding_header }}</h6>
-        </div>
-    {{/element_preceding_header}}
-
-    {{#form_menu_description}}
-        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
-    {{/form_menu_description}}
-
-    <div class="form-group col-md mb-5" data-field_name="{{field_name}}">
-        <label for="{{ field_name }}">{{ element_label }}</label>
-        <select class="form-control" id="{{ field_name }}" name="{{ field_name }}">
-            {{#element_enum_array}}
-                <option value="{{key}}" {{selected}}>{{val}}</option>
-            {{/element_enum_array}}
-        </select>
-        <div class="invalid-feedback">Invalid Input</div>
-    </div>
-</script>
-
 <script id="template_descriptive" type="text/html">
     <blockquote class="blockquote text-left my-5 mx-1">
-        <p class="mb-0">{{ element_label }}</p>
-    </blockquote>
+    <p class="mb-0">{{ element_label }}</p>
+</blockquote>
 </script>
 
+
+
+<!-- Mustache Templates for other site specific stuff-->
 <script id="template_nested_top" type="text/html">
     {{#element_preceding_header}}
-        <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
-            <h6>{{ element_preceding_header }}</h6>
-        </div>
+    <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+        <h6>{{ element_preceding_header }}</h6>
+    </div>
     {{/element_preceding_header}}
 
     {{#form_menu_description}}
-        <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 </script>
 

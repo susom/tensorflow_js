@@ -25,6 +25,19 @@
     #prediction-list .progress-bar{
         transition:.45s width ease-in-out;
     }
+
+    .bmd-form-group .fa-spinner,.bmd-form-group .fa-times,.bmd-form-group .fa-check-circle{
+        display:none;
+    }
+    .bmd-form-group.queued .fa-spinner{
+        display:inline-block;
+    }
+    .bmd-form-group.failed .fa-times{
+        display:inline-block;
+    }
+    .bmd-form-group.done .fa-check-circle{
+        display:inline-block;
+    }
     </style>
 {% endblock %}
 
@@ -74,7 +87,6 @@
                 </div>
                 <div class="col-md-6">
                     <pre id="tf_results" class="d-none">
-
                     </pre>
 
                     <div class ="prediction px-4">
@@ -83,7 +95,6 @@
                             <div class="prediction_details text-muted"><em>Average Prediction Time:</em> <b class="prediction_time"></b> | <em>GPU Memory:</em> <b class="prediction_memory"></b></div>
                         </div>
                         <div id="prediction-list" class="prediction-results">
-
                         </div>
                     </div>
                 </div>
@@ -92,14 +103,9 @@
 
         <hr class="m-5 mx-auto container bg-light"/>
 
-        <form id="redcap_form" class="container mt-5">
-            <div id="redcap_container">
+        <div id="redcap_container">
 
-            </div>
-            <input type="hidden" name="record_hash" value="{{ hash }}"/>
-            <button class="btn btn-primary mce-btn-large" type="submit">Save Observations</button>
-        </form>
-
+        </div>
     </main>
 
     <div class="modal" id="modelLoadingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -120,9 +126,6 @@
         </div>
     </div>
 
-
-
-
     {{ include('mustache_templates.html') }}
 {% endblock %}
 
@@ -140,8 +143,11 @@
     <!-- Custom params for this page -->
     <script>
         $(document).ready(function(){
-            var emsettings = {{ emSettings|raw }};
-            RCTF.init(emsettings);
+            //pass info required to download project's survey metadata and build html
+            RCForm.init({{ renderer_config | raw }}, $("#redcap_container"));
+
+            //passing in module Config
+            RCTF.emsettings         = {{ emSettings|raw }};
 
             //Better to do it here on the page with the HTML in it
             RCTF.uploadInput        = $('#tf_upload_input');
@@ -151,47 +157,20 @@
             RCTF.analysisDone       = $('#tf_analysis_done');
             RCTF.resultsDiv         = $('#tf_results');
             RCTF.loadingModal       = $('#modelLoadingModal');
-            RCTF.bindEvents();
+            RCTF.feature_container  = $("#prediction-list");
+            RCTF.feature_template   = $("#template_feature_prediction");
+            RCTF.uploadButton       = $('#tf_upload_div');
 
-            // Capture click on image and activate hidden input
+            RCTF.record_id          = $('#participant_id');
+            RCTF.model_results      = $('#model_results');
+            RCTF.base64_image       = $('#base64_image');
+
+            RCTF.init();
+
+            // capture click on image and activate hidden input
             $('.select-xray').click(function() {
                 RCTF.uploadInput.click();
             });
-
-            // Load the model, then show upload button
-            RCTF.loadModel(function() {
-                $('#tf_upload_div').show();
-            });
-
-            // first lets just save data, then we can figure out granular methods and hashes
-            $("#redcap_form").submit(function(e){
-                var the_form    = $(this);
-                var record_hash = $("input[name='record_hash']").val();
-                console.log(the_form);
-
-                $.ajax({
-                    method: 'POST',
-                    data: {
-                        "action": "saveAll",
-                        "hash"  : record_hash,
-                        "data"  : the_form.serializeArray(),
-                    },
-                    dataType: 'json'
-                }).done(function(result) {
-                    //remove spinner
-                    console.log(result);
-
-                    //update all :inputs with a new record hash
-                });
-
-
-                e.preventDefault();
-            });
-
-            //pass info required to download project's survey metadata
-            var context = {{ context|raw }};
-            // console.log(context, emsettings);
-            REDCapRenderer.init(context);
         });
     </script>
 {% endblock %}

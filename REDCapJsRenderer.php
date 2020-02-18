@@ -61,7 +61,7 @@ class REDCapJsRenderer
         if (empty($record)) {
             // This was a 'public' hash so we have to create a record-specific hash now
             $nextRecord = getautoid($project_id, false);
-            $newHash    = self::createHash($project_id, $event_id, $form_name, $nextRecord, $instance);
+            $newHash    = self::createHash($project_id, $nextRecord, $event_id, $form_name, $instance);
             $module->emDebug("Creating new record: $nextRecord with new hash $newHash");
         }
 
@@ -245,7 +245,7 @@ class REDCapJsRenderer
      * @return string
      * @throws \Exception
      */
-    static function createHash($project_id, $event_id = null, $form_name = null, $record = null, $instance = null) {
+    static function createHash($project_id, $record = null, $event_id = null, $form_name = null, $instance = null) {
         global $module;
         $hash = self::getUniqueHash($project_id);
 
@@ -332,6 +332,23 @@ class REDCapJsRenderer
         return $hash;
     }
 
+    /**
+     * Find the next available record_id in the RC project
+     * @param $project_id
+     * @return int
+     */
+    static function getNextRecordId($project_id){
+        $params = array(
+            'fields' => array("participant_id")
+        );
 
+        $result = \REDCap::getData($project_id);
 
+        $next_available_id = 1;
+        if(!empty($result)){
+            $next_available_id = max(array_keys($result)) + 1;
+        }
+
+        return $next_available_id;
+    }
 }

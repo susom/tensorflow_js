@@ -22,8 +22,7 @@
 	
 	"enable-every-page-hooks-on-system-pages": false,	
 
-	"noauth-pages": [
-		"modal",
+	"no-auth-pages": [
 		"model"
 	],
 
@@ -32,7 +31,7 @@
 			{
 				"name": "TensorFlowJS",
 				"icon": "report",
-				"url": "model"
+				"url": "model.php?NOAUTH"
 			}
 		],
 		"control-center": [

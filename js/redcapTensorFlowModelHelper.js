@@ -20,21 +20,24 @@ var RCTF = {
     // Array of jquery objects to hold progress bars for results
     prediction_elements: [],
 
-    init: function(emSettings) {
-        this.modelUrl   = emSettings["model-url"].value;
-        this.labels     = [];
+    init: function() {
+        // events for model bits
+        this.bindEvents();
 
-        var temp        = emSettings["expected-variables"].value.split(",");
+        //Extract label list and add to Dom.
+        this.labels     = [];
+        var temp        = this.emsettings["expected-variables"].value.split(",");
         for(var i in temp){
             this.labels.push({"feature" : temp[i].trim() , "percentage" : 0});
         }
-
-
-        var feature_container = $("#prediction-list");
-        var feature_template  = $("#template_feature_prediction").html();
-        var raw_html          = Mustache.render(feature_template, {"features" : this.labels});
+        var raw_html          = Mustache.render(this.feature_template.html(), {"features" : this.labels});
         var row               = $( raw_html );
-        row.appendTo(feature_container);
+        row.appendTo(this.feature_container);
+
+        // Load the model, then show upload button
+        this.loadModel(function() {
+            this.uploadButton.show();
+        });
     },
 
     loadModelOld: async function() {
@@ -61,7 +64,8 @@ var RCTF = {
 
     // An attempt to cache the model in local storage
     loadModel: async function(callback) {
-        var _this = this;
+        var _this       = this;
+        var modelUrl    = this.emsettings["model-url"].value;
 
         // In the following line, you should include the prefixes of implementations you want to test.
         window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -114,8 +118,8 @@ var RCTF = {
         } catch (error) {
             log(error);
             // Model is not in local db storage - let's get it online
-            log('Getting model from ' + this.modelUrl);
-            this.model = await tf.loadLayersModel(this.modelUrl, { 'onProgress': progress_model_load });
+            log('Getting model from ' + modelUrl);
+            this.model = await tf.loadLayersModel(modelUrl, { 'onProgress': progress_model_load });
 
             // Save the model to the local db
             const saveResult = await this.model.save('indexeddb://model');
@@ -132,7 +136,7 @@ var RCTF = {
         // log('preparingResults');
         // _this.prepareResults();
         if(callback && typeof(callback) === "function"){
-            log("Model loaded callback");
+            // log("Model loaded callback");
             callback.call(_this);
         }
     },
@@ -140,7 +144,7 @@ var RCTF = {
     // Actually apply the model to the image data
     predictImage: async function(image_element, callback) {
         var _this = this;
-        log("In predictImage");
+        // log("In predictImage");
 
         tensor = _this.preprocessImage(image_element);
 
@@ -161,9 +165,9 @@ var RCTF = {
         tf.dispose(data);
         tf.dispose(tensor);
 
-        log("predictImage Complete", data);
+        // log("predictImage Complete", data);
         if(callback && typeof(callback) === "function"){
-            log("Calling callback");
+            // log("Calling callback");
             callback.call(_this,data);
         }
     },
@@ -183,7 +187,7 @@ var RCTF = {
             let tensor = tf.browser.fromPixels(image, numChannels = 3);
             const h = tensor.shape[0];
             const w = tensor.shape[1];
-            log('preprocessingImage to ' + h + 'x' + w);
+            // log('preprocessingImage to ' + h + 'x' + w);
 
             tensor = tensor.slice([0, parseInt(w / 2 - h / 2), 0], [h, h, 3]);
             tensor = tensor.resizeBilinear([320, 320]).toFloat();
@@ -225,10 +229,10 @@ var RCTF = {
 
     runModelOnImage: function() {
         var _this = this;
-        log("Starting runModelOnImage");
+        // log("Starting runModelOnImage");
 
         _this.predictImage(_this.uploadImage[0], function() {
-            log("Done with runModelOnImage");
+            // log("Done with runModelOnImage");
             _this.analysisInProgress.hide();
             // $('#tf_analyzing').hide();
 
@@ -243,8 +247,19 @@ var RCTF = {
 
             // fill in form field for model results - raw json
             var stringify_results = JSON.stringify(_this.prediction_data);
-            $("#model_results").val(stringify_results);
-            $("#base64_image").val(_this.uploadImage.attr("src"));
+
+            //TODO decouple the two classes if possible
+            //Put the values of the prediction into the form and create a record in red cap and get a new record hash.
+            //Sucks we have some cross contamination of the classes but will do for now.
+            _this.model_results.val(stringify_results);
+            _this.model_results.closest(".bmd-form-group").addClass("is-filled");
+            _this.base64_image.val(_this.uploadImage.attr("src"));
+            _this.base64_image.closest(".bmd-form-group").addClass("is-filled");
+            RCForm.getRecordHash(function(record_id){
+                // get existing recordhash (create one) then update readonly participant_id field
+                _this.record_id.val(record_id);
+                _this.record_id.closest(".bmd-form-group").addClass("is-filled");
+            });
         });
     },
 
@@ -266,7 +281,7 @@ var RCTF = {
         setTimeout(function(){
             var inline_text = Math.round(prediction_perc)+"%";
             var text_ele = $("<span>").html(inline_text).addClass(textclass).addClass("pr-1");
-            $(".progress-bar[data-feature='"+data_label+"']").css("width",inline_text).append(text_ele);
+            $(".progress-bar[data-feature='"+data_label+"']").css("width",inline_text).empty().append(text_ele);
         }, i*220);
     },
 
@@ -277,7 +292,7 @@ var RCTF = {
 
         // Capture changes to the upload input
         _this.uploadInput.change(function() {
-            log("Analyzing Upload Input...", _this.uploadInput);
+            // log("Analyzing Upload Input...", _this.uploadInput);
             // Read the image
             _this.readURL(_this.uploadInput, _this.uploadImage, _this.previewImage);
         });
@@ -299,14 +314,14 @@ var RCTF = {
     // Reads the inputs and on completion calls the callback method
     readURL: function(uploadInput, destImage, callback) {
         var _this = this;
-        log("File read initiated...");
+        // log("File read initiated...");
         let input = uploadInput[0];
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
             // Set up finishing function
             reader.onload = function(e) {
-                log("reader onLoad event");
+                // log("reader onLoad event");
                 callback.call(_this, e.target.result);
             };
 
