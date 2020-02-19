@@ -116,8 +116,7 @@ class REDCapJsRenderer
         // Let's assemble an array of valid fields for this form, starting with event_id:
         $valid_fields = \REDCap::getValidFieldsByEvents($project_id, $event_id);
 
-        $module->emDebug("hey ladies shut uip",$valid_fields);
-        // If we have a form, then let's also filter fields by form
+         // If we have a form, then let's also filter fields by form
         if (!empty($form_name)) {
             $form_fields = \REDCap::getFieldNames($form_name);
             $valid_fields = array_unique(array_merge($valid_fields, $form_fields));

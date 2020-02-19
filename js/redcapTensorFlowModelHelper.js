@@ -255,10 +255,16 @@ var RCTF = {
             _this.model_results.closest(".bmd-form-group").addClass("is-filled");
             _this.base64_image.val(_this.uploadImage.attr("src"));
             _this.base64_image.closest(".bmd-form-group").addClass("is-filled");
+
             RCForm.getRecordHash(function(record_id){
                 // get existing recordhash (create one) then update readonly participant_id field
                 _this.record_id.val(record_id);
                 _this.record_id.closest(".bmd-form-group").addClass("is-filled");
+
+                // Only on first image load will there be a callback to this method
+                // so save the model_results and base64_image in that new record
+                RCForm.saveField(RCForm.fields["model_results"]);
+                RCForm.saveField(RCForm.fields["base64_image"]);
             });
         });
     },
@@ -335,7 +341,7 @@ var RCTF = {
     previewImage: function(result) {
         var _this = this;
 
-        log("In previewImage", result);
+        // log("In previewImage", result);
         _this.uploadImage
             .attr('src', result)
             .show(0);

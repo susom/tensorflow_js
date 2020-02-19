@@ -36,11 +36,11 @@ function REDCapField(metadata) {
 }
 
 REDCapField.prototype.insertRow = function(container) {
-    let jq_row              = $( this.getRow() );
-    // if(!this.metadata.readonly){
+    if(this.getRow()){
+        let jq_row = $( this.getRow() );
         this.bindChange(jq_row);
-    // }
-    jq_row.appendTo(container);
+        jq_row.appendTo(container);
+    }
 };
 
 REDCapField.prototype.getRow = function(format) {
@@ -100,6 +100,7 @@ REDCapField.prototype.getRow = function(format) {
         return Mustache.render(m_template, this.metadata);
     }else{
         console.log("The field type [",this.metadata.element_type,"] is not supported yet");
+        return false;
     }
 };
 
@@ -109,33 +110,42 @@ REDCapField.prototype.bindChange = function(element){
     this.og_parent_classes  = this.jq_input.closest(".bmd-form-group").attr("class"); //will do some class manipulation , so lets remember og state.
     var _this               = this;
 
+    // console.log("binding change/blur event to " , this.metadata["field_name"]);
+
     //HOLY CRAP, THE .change() EVENT IN MD LIBRARY HAS AN INFINITE TRIGGER BUG.  WASTED 6 hours on this BS.
     this.jq_input.blur(function(e){
-        _this.updateStatus("queued");
+        _this.saved = false;
 
-        //set TS when starting save so we dont have run away recursion
-        if(!_this.hasOwnProperty("start_save_ts")){
-            _this.start_save_ts = Date.now();
-        }
-        var recursive_try_ts    = Date.now();
-        var try_diff            = recursive_try_ts - _this.start_save_ts;
+        if(_this.hasOwnProperty("metadata") && !_this.metadata["readonly"]) {
+            _this.updateStatus("queued");
 
-        //give it a 15 second window to keep trying
-        if(try_diff < 15000){
-            if(!RCForm.saveField(_this)){
-                //if fail, then trigger this blur again
-                setTimeout(function(){
-                    _this.jq_input.blur();
-                } , 1000);
-            }else{
-                _this.updateStatus("done");
+            // console.log("bound event blur, will attempt to save ", _this.metadata["field_name"]);
+
+            //set TS when starting save so we dont have run away recursion
+            if (!_this.hasOwnProperty("start_save_ts")) {
+                _this.start_save_ts = Date.now();
             }
-        }else{
-            console.log("we give up , it hasnt saved after "+(try_diff/1000)+" seconds , try again later?");
-            _this.updateStatus("failed");
-            delete _this.start_save_ts;
-        }
+            var recursive_try_ts    = Date.now();
+            var try_diff            = recursive_try_ts - _this.start_save_ts;
 
+            //give it a 10 second window to keep trying
+            if (try_diff < 10000) {
+                    RCForm.saveField(_this);
+
+                    //NOw wait 2 seconds for the ajax to complete, if not call the whole thing again
+                    setTimeout(function () {
+                        if(!_this.saved){
+                            _this.jq_input.blur();
+                        }else{
+                            delete _this.start_save_ts;
+                        }
+                    }, 2000);
+            } else {
+                console.log("we give up , it hasnt saved after " + (try_diff / 1000) + " seconds , try again later?");
+                _this.updateStatus("failed");
+                delete _this.start_save_ts;
+            }
+        }
         e.preventDefault();
     });
 }
@@ -149,8 +159,14 @@ REDCapField.prototype.getName = function(){
 }
 
 REDCapField.prototype.updateStatus = function(status){
+    var filled = this.jq_input.closest(".bmd-form-group").hasClass("is-filled");
     this.jq_input.closest(".bmd-form-group").removeClass().addClass(this.og_parent_classes).addClass(status);
+
+    if(filled){
+        this.jq_input.closest(".bmd-form-group").addClass("is-filled");
+    }
 }
+
 REDCapField.prototype.updateValue = function(valu){
     // this.jq_input.find(":input").val(valu);
     // this.jq_input.find("textarea").val(valu);
@@ -174,11 +190,8 @@ RCForm = {
         this.exclude_fields = config.exclude_fields;
         this.readonly       = config.readonly;
         this.metadata       = config["metadata"];
+
         console.log("new_hash",this.new_hash);
-        //if empty for some reason (it will never be empty we control the the model)
-        // if($.isEmptyObject(this.metadata)) {
-        //     this.getMetadata();
-        // }
 
         // Build the field objects and append to container
         this.createForm(container);
@@ -230,12 +243,24 @@ RCForm = {
 
     saveField: function(field){
         //NEED AN Existing record_hash to Save To
+        console.log("trying to save", field, this.record_hash);
+
+        // if(RCTF.model_results.val() == "" && RCTF.base64_image.val() == ""){
+        //     console.log("nothing to see here");
+        //     return false;
+        // }
+
         if(this.record_hash == "" && !this.hash_flag){
+            console.log("should only be in here once");
             this.hash_flag = true;
 
-            //ajax create proper record_hash, but this should exist already ON image select maybe?
             //this is not good, possible race condition
-            this.getRecordHash();
+            //put async = false in the ajax call is that all i need tyo do?
+            this.getRecordHash(function(record_id){
+                // get existing recordhash (create one) then update readonly participant_id field
+                RCTF.record_id.val(record_id);
+                RCTF.record_id.closest(".bmd-form-group").addClass("is-filled");
+            });
         }
 
         var input_value     = field.getValue();
@@ -251,9 +276,8 @@ RCForm = {
             },
             dataType: 'json'
         }).done(function(result) {
-            //remove spinner
-            console.log(result);
-            return true;
+            field.updateStatus("done");
+            field.saved = true;
         });
     },
 
@@ -261,33 +285,25 @@ RCForm = {
 
     },
 
-    saveForm: function(){
-
-    },
-
     getRecordHash: function(_cb){
         var _this = this;
-        //GET A ACTUAL RECORD HASH
+
+        //GET A record_hash representing the next available record that we can upload to.
         $.ajax({
             method: 'POST',
             data: {
                 "action": "getRecordHash",
                 "hash"  : this.new_hash,
             },
+            // async: false,
             dataType: 'json'
         }).done(function(result) {
-            console.log(result);
             _this.record_hash    = result.record_hash;
             _this.participant_id = result.record_id;
 
             // update form to indicate new record created and ready to take values
             if(_cb && typeof(_cb) === "function"){
                 _cb(_this.participant_id);
-
-                // Only on first image load will there be a callback to this method
-                // so save the model_results and base64_image in that new record
-                _this.saveField(_this.fields["model_results"]);
-                _this.saveField(_this.fields["base64_image"]);
 
                 // dont mess with this read only UI
                 _this.fields["participant_id"].jq_input.unbind();
