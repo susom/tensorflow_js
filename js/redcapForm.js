@@ -31,8 +31,9 @@ video_url: null
 video_display_inline: "0"
 */
 
-function REDCapField(metadata) {
+function REDCapField(metadata, parentForm) {
     this['metadata'] = metadata;
+    this['parentForm'] = parentForm;
 }
 
 REDCapField.prototype.insertRow = function(container) {
@@ -124,10 +125,9 @@ REDCapField.prototype.bindChange = function(element){
 }
 
 REDCapField.prototype.save = function(){
-    if(this.saved) return;
-
+    // console.log("field.save() " + this.getName() );
     this.updateStatus("queued");
-    RCForm.saveField(this);
+    this.parentForm.saveField(this);
 }
 
 REDCapField.prototype.getValue = function(){
@@ -229,7 +229,7 @@ RCForm = {
             if (this.exclude_fields.indexOf(field_name) > -1){
                continue;
             }
-            this.fields[field_name] = new REDCapField(this.metadata[field_name]);
+            this.fields[field_name] = new REDCapField(this.metadata[field_name], this);
             this.fields[field_name]["metadata"]["hash"]     = this.new_hash;
 
             var readonly = this.readonly.indexOf(field_name) > -1 ? "readonly" : "";
@@ -249,18 +249,19 @@ RCForm = {
         // console.log("saveField started for " + field.metadata.field_name);
 
         //Checking if record_hash exists or is being fetched
-        var promise = this.record_hash;
         if(this.record_hash == "") {
             // get record_hash for the first time
             if (!this.hash_flag) {
-                this.hash_flag = true; // get only once per record;
-
-                this.queue.then(this.getRecordHash.bind(this));
+                this.hash_flag  = true; // get only once per record;
+                this.queue      = this.queue.then(this.getRecordHash.bind(this));
             }
             // console.log("quueing field" + field.metadata.field_name);
-            this.queue.then(field.save.bind(field));
-            // this.queue.resolve();
+            // this.queue = this.queue.then(this.save.bind(field));
+            this.queue = this.queue.then(this.saveField.bind(this,field));
+
         } else {
+            console.log("alright, record_hash is there , field saving  " + field.getName());
+
             var input_field     = field.getName();
             var input_value     = field.getValue();
             var field_type      = field.getType();
@@ -276,9 +277,10 @@ RCForm = {
                 },
                 dataType: 'json'
             }).done(function(result) {
-                console.log("saved " + field.metadata.field_name + " with result", result);
+                // console.log("saved " + field.metadata.field_name + " with result", result);
                 field.updateStatus("done");
-                field.saved = true;
+            }).fail(function(){
+                console.log("save failed on field ", field);
             });
         }
     },
@@ -302,8 +304,7 @@ RCForm = {
             _this.record_hash    = result.record_hash;
             _this.hash_flag      = false;
 
-            console.log('Record hash obtained: ' + _this.record_hash);
-
+            // console.log('Record hash obtained: ' + _this.record_hash);
 
             _this.participant_id = result.record_id;
             RCTF.record_id.val(_this.participant_id);
