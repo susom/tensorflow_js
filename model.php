@@ -36,33 +36,30 @@ if(!empty($_POST['action'])) {
 
         case "saveField":
             // IF update_record : use hash supplied by element.
-            $input_value = filter_var($_POST['input_value'], FILTER_SANITIZE_STRING);
-            $input_field = filter_var($_POST['input_field'], FILTER_SANITIZE_STRING);
+            $input_field = $_POST['input_field'];// filter_var($_POST['input_field'], FILTER_SANITIZE_STRING);
+            $input_value = $_POST['input_value'];// filter_var($_POST['input_value'], FILTER_SANITIZE_STRING);
+            $field_type  = $_POST['field_type'];
 
+            $fields = array();
+            if($field_type == "checkbox"){
+                foreach($input_value as $idx => $field_val){
+                    $funky_name = $input_field . "___" . $field_val["val"];
+                    $fields[$funky_name] = $field_val["checked"];
+                }
+            }else{
+                $fields[$input_field] = $input_value;
+            }
             $data = array(
                  "hash" => $hash
-                ,"fields" => array(
-                    $input_field => $input_value
-                )
+                ,"fields" => $fields
             );
 
             $response = REDCapJsRenderer::saveData($data);
+            $response = array("response" => $response, "data" => $data);
             break;
 
         case "saveAll":
-            $from_form  = $_POST["data"] ?? array();
-            $fields     = array();
-            foreach($from_form as $field){
-                $fields[$field["name"]] = $field["value"];
-            }
 
-            $data = array(
-                 "hash"     => $hash
-                ,"fields"   => $fields
-            );
-
-            $response = $data;
-//            $response = REDCapJsRenderer::saveData($data);
             break;
 
         default:

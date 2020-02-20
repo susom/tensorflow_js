@@ -56,14 +56,13 @@ class REDCapJsRenderer
         $instance   = $params['instance'];
         $timestamp  = $params['timestamp'];
 
-        //TODO: Add support for instances
-
-        if (empty($record)) {
-            // This was a 'public' hash so we have to create a record-specific hash now
-            $nextRecord = getautoid($project_id, false);
-            $newHash    = self::createHash($project_id, $nextRecord, $event_id, $form_name, $instance);
-            $module->emDebug("Creating new record: $nextRecord with new hash $newHash");
-        }
+//        //TODO: Add support for instances
+//        if (empty($record)) {
+//            // This was a 'public' hash so we have to create a record-specific hash now
+//            $nextRecord = getautoid($project_id, false);
+//            $newHash    = self::createHash($project_id, $nextRecord, $event_id, $form_name, $instance);
+//            $module->emDebug("Creating new record: $nextRecord with new hash $newHash");
+//        }
 
         // Do we save all at once or one at a time?  Presumably all at once for speed?
 //        $fields         = [];
@@ -71,13 +70,14 @@ class REDCapJsRenderer
         $saveFields     = [];
         foreach ($fields as $field_name => $field_values) {
 
-            // Make sure the field is valid
-            if (!in_array($field_name, $valid_fields)) {
+            // Make sure the field is valid, check out
+            if (!in_array($field_name, $valid_fields) && strpos($field_name, "___") ==  -1) {
                 $module->emError("Attempt to save invalid field $field_name", $field_values, $valid_fields);
                 continue;
             }
 
             // TODO: Discuss how to save checkbox values...  Currently client must post ALL boxes in each change
+            // Assume anything wiht triple _ is ok?
             $saveFields[$field_name] = $field_values;
         }
 

@@ -37,8 +37,14 @@ function REDCapField(metadata) {
 
 REDCapField.prototype.insertRow = function(container) {
     if(this.getRow()){
-        let jq_row = $( this.getRow() );
-        this.bindChange(jq_row);
+        let jq_row              = $( this.getRow() );
+        this.jq_input           = jq_row.find(":input");
+        this.og_parent_classes  = this.jq_input.closest(".bmd-form-group").attr("class"); //will do some class manipulation, so lets remember og state.
+
+        if(!this.metadata["readonly"]) {
+            this.bindChange(jq_row);
+        }
+
         jq_row.appendTo(container);
     }
 };
@@ -47,7 +53,7 @@ REDCapField.prototype.getRow = function(format) {
     //templates are injected (hidden) into the HTML and reused throughout , referenced to by #id
 
     // yn and tf types are just radio
-    var template_suffix = this.metadata.element_type;
+    var template_suffix = this.getType();
     if(template_suffix == "yesno" || template_suffix == "truefalse"){
         template_suffix = "radio";
     }
@@ -84,7 +90,7 @@ REDCapField.prototype.getRow = function(format) {
                 }
 
                 if(hot){
-                    checked_selected = this.metadata.element_type == "select" ? "selected" : "checked";
+                    checked_selected = template_suffix == "select" ? "selected" : "checked";
                 }
 
                 enum_result.push({"index": i, "key" : label, "val" : value, "selected" : checked_selected});
@@ -99,69 +105,64 @@ REDCapField.prototype.getRow = function(format) {
         // });
         return Mustache.render(m_template, this.metadata);
     }else{
-        console.log("The field type [",this.metadata.element_type,"] is not supported yet");
+        console.log("The field type [",template_suffix,"] is not supported yet");
         return false;
     }
 };
 
 REDCapField.prototype.bindChange = function(element){
-    // Each created input field will need to have an event binding for hijacking default behavior
-    this.jq_input           = element.find(":input");
-    this.og_parent_classes  = this.jq_input.closest(".bmd-form-group").attr("class"); //will do some class manipulation , so lets remember og state.
-    var _this               = this;
+    var _this = this;
 
-    // console.log("binding change/blur event to " , this.metadata["field_name"]);
+    // THE .change() EVENT IN MD LIBRARY HAS AN INFINITE TRIGGER BUG.
+    // TODO If unable to use .change() , then need to check save dirty status
 
-    //HOLY CRAP, THE .change() EVENT IN MD LIBRARY HAS AN INFINITE TRIGGER BUG.  WASTED 6 hours on this BS.
     this.jq_input.blur(function(e){
         _this.saved = false;
-
-        if(_this.hasOwnProperty("metadata") && !_this.metadata["readonly"]) {
-            _this.updateStatus("queued");
-
-            // console.log("bound event blur, will attempt to save ", _this.metadata["field_name"]);
-
-            //set TS when starting save so we dont have run away recursion
-            if (!_this.hasOwnProperty("start_save_ts")) {
-                _this.start_save_ts = Date.now();
-            }
-            var recursive_try_ts    = Date.now();
-            var try_diff            = recursive_try_ts - _this.start_save_ts;
-
-            //give it a 10 second window to keep trying
-            if (try_diff < 10000) {
-                    RCForm.saveField(_this);
-
-                    //NOw wait 2 seconds for the ajax to complete, if not call the whole thing again
-                    setTimeout(function () {
-                        if(!_this.saved){
-                            _this.jq_input.blur();
-                        }else{
-                            delete _this.start_save_ts;
-                        }
-                    }, 2000);
-            } else {
-                console.log("we give up , it hasnt saved after " + (try_diff / 1000) + " seconds , try again later?");
-                _this.updateStatus("failed");
-                delete _this.start_save_ts;
-            }
-        }
+        _this.save();
         e.preventDefault();
     });
 }
 
+REDCapField.prototype.save = function(){
+    if(this.saved) return;
+
+    this.updateStatus("queued");
+    RCForm.saveField(this);
+}
+
 REDCapField.prototype.getValue = function(){
-    return this.jq_input.val();
+
+    var field_type =  this.getType()
+    if(field_type == "checkbox" || field_type == "radio") {
+        var check_values = [];
+        this.jq_input.each(function (){
+            if($(this).prop("checked")){
+                check_values.push({ "val" : $(this).val() , "checked" :  1});
+            }else{
+                //damn, ok only want to get all inputs if checkbox. not regular radio
+                if(field_type == "checkbox"){
+                    check_values.push({ "val" : $(this).val() , "checked" :  0});
+                }
+            }
+        });
+        var val = field_type == "checkbox" ? check_values : check_values[0]["val"];
+    }else{
+        var val = this.jq_input.val();
+    }
+    return val;
 }
 
 REDCapField.prototype.getName = function(){
     return this.metadata.field_name;
 }
 
+REDCapField.prototype.getType = function(){
+    return this.metadata.element_type;
+}
+
 REDCapField.prototype.updateStatus = function(status){
     var filled = this.jq_input.closest(".bmd-form-group").hasClass("is-filled");
     this.jq_input.closest(".bmd-form-group").removeClass().addClass(this.og_parent_classes).addClass(status);
-
     if(filled){
         this.jq_input.closest(".bmd-form-group").addClass("is-filled");
     }
@@ -173,6 +174,9 @@ REDCapField.prototype.updateValue = function(valu){
     // this.jq_input.closest(".bmd-form-group").addClass("is-filled");
 }
 
+
+
+
 RCForm = {
     //not really a requirement to preset these vars
     config      : {},
@@ -183,6 +187,7 @@ RCForm = {
     record_id   : "",
     metadata    : {},
     fields      : {},
+    queue       : $.Deferred().resolve(),
 
     init: function(config, container) {
         this.config         = config;
@@ -190,8 +195,6 @@ RCForm = {
         this.exclude_fields = config.exclude_fields;
         this.readonly       = config.readonly;
         this.metadata       = config["metadata"];
-
-        console.log("new_hash",this.new_hash);
 
         // Build the field objects and append to container
         this.createForm(container);
@@ -242,74 +245,69 @@ RCForm = {
     },
 
     saveField: function(field){
-        //NEED AN Existing record_hash to Save To
-        console.log("trying to save", field, this.record_hash);
+        var _this = this;
+        // console.log("saveField started for " + field.metadata.field_name);
 
-        // if(RCTF.model_results.val() == "" && RCTF.base64_image.val() == ""){
-        //     console.log("nothing to see here");
-        //     return false;
-        // }
+        //Checking if record_hash exists or is being fetched
+        var promise = this.record_hash;
+        if(this.record_hash == "") {
+            // get record_hash for the first time
+            if (!this.hash_flag) {
+                this.hash_flag = true; // get only once per record;
 
-        if(this.record_hash == "" && !this.hash_flag){
-            console.log("should only be in here once");
-            this.hash_flag = true;
+                this.queue.then(this.getRecordHash.bind(this));
+            }
+            // console.log("quueing field" + field.metadata.field_name);
+            this.queue.then(field.save.bind(field));
+            // this.queue.resolve();
+        } else {
+            var input_field     = field.getName();
+            var input_value     = field.getValue();
+            var field_type      = field.getType();
 
-            //this is not good, possible race condition
-            //put async = false in the ajax call is that all i need tyo do?
-            this.getRecordHash(function(record_id){
-                // get existing recordhash (create one) then update readonly participant_id field
-                RCTF.record_id.val(record_id);
-                RCTF.record_id.closest(".bmd-form-group").addClass("is-filled");
+            $.ajax({
+                method: 'POST',
+                data: {
+                    "action"        : "saveField",
+                    "hash"          : _this.record_hash,
+                    "input_field"   : input_field,
+                    "input_value"   : input_value,
+                    "field_type"    : field_type,
+                },
+                dataType: 'json'
+            }).done(function(result) {
+                console.log("saved " + field.metadata.field_name + " with result", result);
+                field.updateStatus("done");
+                field.saved = true;
             });
         }
-
-        var input_value     = field.getValue();
-        var input_field     = field.getName();
-
-        $.ajax({
-            method: 'POST',
-            data: {
-                "action"        : "saveField",
-                "hash"          : this.record_hash,
-                "input_value"   : input_value,
-                "input_field"   : input_field
-            },
-            dataType: 'json'
-        }).done(function(result) {
-            field.updateStatus("done");
-            field.saved = true;
-        });
     },
 
     clearForm: function(){
-
+        this.hash_flag = false;
     },
 
-    getRecordHash: function(_cb){
+    getRecordHash: function(){
         var _this = this;
 
         //GET A record_hash representing the next available record that we can upload to.
-        $.ajax({
+        return $.ajax({
             method: 'POST',
             data: {
                 "action": "getRecordHash",
                 "hash"  : this.new_hash,
             },
-            // async: false,
             dataType: 'json'
-        }).done(function(result) {
+        }).then(function(result) {
             _this.record_hash    = result.record_hash;
+            _this.hash_flag      = false;
+
+            console.log('Record hash obtained: ' + _this.record_hash);
+
+
             _this.participant_id = result.record_id;
-
-            // update form to indicate new record created and ready to take values
-            if(_cb && typeof(_cb) === "function"){
-                _cb(_this.participant_id);
-
-                // dont mess with this read only UI
-                _this.fields["participant_id"].jq_input.unbind();
-                _this.fields["model_results"].jq_input.unbind();
-                _this.fields["base64_image"].jq_input.unbind();
-            }
+            RCTF.record_id.val(_this.participant_id);
+            RCTF.record_id.closest(".bmd-form-group").addClass("is-filled");
         });
     }
 };
