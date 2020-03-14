@@ -39,6 +39,8 @@
     .bmd-form-group.is-filled .fa-check-circle{
         display:inline-block;
     }
+
+    .btn-group .btn{ margin-right:20px }
     </style>
 {% endblock %}
 
@@ -145,6 +147,7 @@
     <script>
         $(document).ready(function(){
             //pass info required to download project's survey metadata and build html
+            // this puts the form into the DOM so must happen before the RCTF work
             RCForm.init({{ renderer_config | raw }}, $("#redcap_container"));
 
             //passing in module Config
@@ -165,17 +168,14 @@
             RCTF.record_id          = $('#participant_id');
             RCTF.model_results      = $('#model_results');
             RCTF.base64_image       = $('#base64_image');
-
             RCTF.init();
-
-            RCTF.model_results.val("haha");
-            RCTF.base64_image.val("hoho");
-            RCForm.fields["model_results"].save();
-            RCForm.fields["base64_image"].save();
 
             // capture click on image and activate hidden input
             $('.select-xray').click(function() {
                 RCTF.uploadInput.click();
+
+                //form inits disabled
+                RCForm.enableForm();
             });
         });
     </script>

@@ -125,7 +125,7 @@ var RCTF = {
             const saveResult = await this.model.save('indexeddb://model');
             log("Saved model to local db?", saveResult);
         }
-        log('Just loaded a model', this.model);
+        // log('Just loaded a model', this.model);
 
         stopProgress();
 
@@ -237,13 +237,10 @@ var RCTF = {
             // $('#tf_analyzing').hide();
 
             // show some prediction detail data
-            $(".prediction_time").text(_this.prediction_time + "ms");
-            $(".prediction_memory").text(_this.prediction_memory + "MB");
-            $(".prediction_details").addClass("temp_show_remove_on_clear");
-            _this.analysisDone.addClass("temp_show_remove_on_clear").fadeIn();
+            _this.updatePredictionStats();
 
             // update visual graph of prediction percentages by feature
-            _this.updateFeaturePredictions(_this.prediction_data);
+            _this.updateFeaturePredictions();
 
             // fill in form field for model results - raw json
             var stringify_results = JSON.stringify(_this.prediction_data);
@@ -261,17 +258,42 @@ var RCTF = {
         });
     },
 
-    updateFeaturePredictions : function(prediction_list){
-        var _this = this;
+    updatePredictionStats : function(){
+        $(".prediction_time").text(this.prediction_time + "ms");
+        $(".prediction_memory").text(this.prediction_memory + "MB");
+        $(".prediction_details").addClass("temp_show_remove_on_clear");
+        this.analysisDone.addClass("temp_show_remove_on_clear").fadeIn();
+    },
+
+    clearPredictionStats : function(){
+        $(".prediction_time").text("");
+        $(".prediction_memory").text("");
+        $(".prediction_details").removeClass("temp_show_remove_on_clear");
+        this.analysisDone.removeClass("temp_show_remove_on_clear").fadeOut();
+    },
+
+    updateFeaturePredictions : function(){
+        var prediction_list = this.prediction_data;
         for(var i in prediction_list){
             var prediction_perc = prediction_list[i]*100;
-            var data_label      = _this.labels[i]["feature"];
+            var data_label      = this.labels[i]["feature"];
 
             var textclass = "text-dark";
             if(prediction_perc > 85){
                 textclass="text-white";
             }
-            _this.predictionBarScaledTimeout(i, data_label, prediction_perc, textclass);
+            this.predictionBarScaledTimeout(i, data_label, prediction_perc, textclass);
+        }
+    },
+
+    clearFeaturePredictions : function(){
+        var prediction_list = this.prediction_data;
+        for(var i in prediction_list){
+            var prediction_perc = 0;
+            var data_label      = this.labels[i]["feature"];
+
+            var textclass = "text-dark";
+            this.predictionBarScaledTimeout(i, data_label, prediction_perc, textclass);
         }
     },
 

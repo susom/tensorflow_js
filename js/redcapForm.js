@@ -168,13 +168,11 @@ REDCapField.prototype.updateStatus = function(status){
     }
 }
 
-REDCapField.prototype.updateValue = function(valu){
-    // this.jq_input.find(":input").val(valu);
-    // this.jq_input.find("textarea").val(valu);
-    // this.jq_input.closest(".bmd-form-group").addClass("is-filled");
+REDCapField.prototype.clearField = function(){
+    if(this.jq_input){
+        this.jq_input.closest(".bmd-form-group").removeClass().addClass(this.og_parent_classes);
+    }
 }
-
-
 
 
 RCForm = {
@@ -218,9 +216,36 @@ RCForm = {
     createForm : function(container){
         var newForm = $("<form>").addClass("container").addClass("mt-5").attr("id","redcap_form");
         container.append(newForm);
-
         this.buildFields();
         this.insertRows(newForm);
+
+        this.jq     = newForm;
+        this.addFormButtons();
+
+        //start form disabled until image selected
+        this.disableForm();
+    },
+
+    addFormButtons: function(){
+        var _this = this;
+
+        var reset_button = $("<button type='reset' class='btn btn-raised btn-danger'>Reset Form</button>");
+        var save_button  = $("<button type='button' class='btn btn-raised btn-primary'>Save Form</button>");
+
+        var btn_group   = $("<div class='btn-group'></div>");
+        btn_group.append(reset_button);
+        btn_group.append(save_button);
+
+        reset_button.click(function(e){
+            _this.refreshForm();
+            e.preventDefault();
+        });
+
+        save_button.click(function(){
+           console.log("do nothing but it allows for final input to 'change()'");
+        });
+
+        this.jq.append(btn_group);
     },
 
     buildFields: function(){
@@ -285,10 +310,6 @@ RCForm = {
         }
     },
 
-    clearForm: function(){
-        this.hash_flag = false;
-    },
-
     getRecordHash: function(){
         var _this = this;
 
@@ -310,5 +331,44 @@ RCForm = {
             RCTF.record_id.val(_this.participant_id);
             RCTF.record_id.closest(".bmd-form-group").addClass("is-filled");
         });
+    },
+
+    refreshForm: function(){
+        // make form ready for new image
+
+        // console.log("reset form + disable form");
+        this.clearForm();
+        this.disableForm();
+
+        // console.log("Clear Feature Predictions");
+        RCTF.clearFeaturePredictions();
+        RCTF.clearPredictionStats();
+
+        // console.log("Clear Image");
+        RCTF.uploadImage.attr("src","").hide(0);
+    },
+
+    clearForm: function(){
+        //reset form , js functionatlity
+        this.jq.trigger("reset");
+
+        //reset hash or else will try to save on existing record
+        this.record_hash = false;
+
+        //clear UI indicators
+        for(var i in this.fields){
+            this.fields[i].clearField();
+        }
+    },
+
+    disableForm: function(){
+        //set disabled until triggered
+        this.jq.find(":input").prop("disabled", true);
+    },
+
+    enableForm: function(){
+        //remove disabled
+        this.jq.find(":input").prop("disabled", false);
     }
+
 };

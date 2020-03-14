@@ -121,6 +121,37 @@
 </blockquote>
 </script>
 
+<script id="template_file_notyet" type="text/html">
+    {{#element_preceding_header}}
+    <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+        <h6>{{ element_preceding_header }}</h6>
+    </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+    <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+        <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
+        <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
+        <div class="invalid-feedback">Invalid Input</div>
+    </div>
+</script>
+
+<script id="template_datetime" type="text/html">
+    <div class="md-form">
+        <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker">
+        <label for="date-picker-example">Try me...</label>
+    </div>
+</script>
+
+
+
+
+
+
+
 
 
 <!-- Mustache Templates for other site specific stuff-->
@@ -144,7 +175,7 @@
         </div>
         <div class="col-8">
             <div class="progress mb-2 bg-light" style="min-height:22px; ">
-                <div class="progress-bar rounded text-right bg-warning" data-feature="{{feature}}" role="progressbar" style="width: {{percentage}}%"></div>
+                <div class="progress-bar rounded text-right bg-warning" data-feature="{{feature}}" role="progressbar" style="width: {{percentage}}%"><span class="text-dark pr-1">0%</span></div>
             </div>
         </div>
     </div>
