@@ -37,17 +37,15 @@ function REDCapField(metadata, parentForm) {
 }
 
 REDCapField.prototype.insertRow = function(container) {
-    if(this.getRow()){
-        let jq_row              = $( this.getRow() );
-        this.jq_input           = jq_row.find(":input");
-        this.og_parent_classes  = this.jq_input.closest(".bmd-form-group").attr("class"); //will do some class manipulation, so lets remember og state.
+    let jq_row              = $( this.getRow() );
+    this.jq_input           = jq_row.find(":input");
+    this.og_parent_classes  = this.jq_input.closest(".bmd-form-group").attr("class"); //will do some class manipulation, so lets remember og state.
 
-        if(!this.metadata["readonly"]) {
-            this.bindChange(jq_row);
-        }
-
-        jq_row.appendTo(container);
+    if(!this.metadata["readonly"]) {
+        this.bindChange(jq_row);
     }
+
+    jq_row.appendTo(container);
 };
 
 REDCapField.prototype.getRow = function(format) {
@@ -57,6 +55,25 @@ REDCapField.prototype.getRow = function(format) {
     var template_suffix = this.getType();
     if(template_suffix == "yesno" || template_suffix == "truefalse"){
         template_suffix = "radio";
+    }
+
+
+    /*ONLY WAY TO TELL IF ITS A DATE FIELD IS if it has a element_validation_type of "date(time)" */
+
+    if (this.getType() == "text"
+        && this.metadata.hasOwnProperty("element_validation_type")
+        && this.metadata["element_validation_type"]
+        && this.metadata["element_validation_type"].indexOf("date") > -1){
+
+        template_suffix = "datetime";
+
+        //store this to bind datepicker later
+        this.parentForm["addpickdates"].push(this.getName());
+    }
+
+    // Special attention for file type
+    if (this.getType() == "file"){
+        // console.log("file type", this);
     }
 
     var m_template_type =  "#template_" + template_suffix;
@@ -186,6 +203,7 @@ RCForm = {
     metadata    : {},
     fields      : {},
     queue       : $.Deferred().resolve(),
+    addpickdates : [],
 
     init: function(config, container) {
         this.config         = config;
@@ -196,6 +214,15 @@ RCForm = {
 
         // Build the field objects and append to container
         this.createForm(container);
+        this.bindDatePicker();
+    },
+
+    bindDatePicker : function(){
+        //for date inputs (need to have date validation in REDCap), bind pickadate Functionality
+        for(var i in this.addpickdates){
+            var input_id = "#"+this.addpickdates[i];
+            $(input_id).pickadate();
+        }
     },
 
     // todo:  HANDLE ERRORS
@@ -284,29 +311,70 @@ RCForm = {
             // this.queue = this.queue.then(this.save.bind(field));
             this.queue = this.queue.then(this.saveField.bind(this,field));
 
+
+
         } else {
-            console.log("alright, record_hash is there , field saving  " + field.getName());
+            console.log("alright, field saving  " + field.getName());
 
             var input_field     = field.getName();
             var input_value     = field.getValue();
             var field_type      = field.getType();
 
-            $.ajax({
-                method: 'POST',
-                data: {
-                    "action"        : "saveField",
-                    "hash"          : _this.record_hash,
-                    "input_field"   : input_field,
-                    "input_value"   : input_value,
-                    "field_type"    : field_type,
-                },
-                dataType: 'json'
-            }).done(function(result) {
-                // console.log("saved " + field.metadata.field_name + " with result", result);
-                field.updateStatus("done");
-            }).fail(function(){
-                console.log("save failed on field ", field);
-            });
+            if(field_type == "file"){
+                var js_input = field.jq_input[0];
+                var files    = js_input.files;
+                var file     = files[0];
+
+                if(files && file){
+                    var formData = new FormData();
+
+                    console.log(file.type);
+
+                    formData.append('input_value', file);
+                    formData.append('action', 'saveField ');
+                    formData.append('hash', _this.record_hash);
+                    formData.append('field_type', field_type);
+                    formData.append('input_field', input_field);
+
+                    console.log(formData.getAll("input_value"));
+
+                    $.ajax({
+                        method: 'POST',
+                        data: formData,
+                        contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+                        processData: false, // NEEDED, DON'T OMIT THIS
+                    }).done(function (result) {
+                        field.updateStatus("done");
+                        console.log(result,"sheeeet");
+                    }).fail(function () {
+                        console.log("File save failed on field ", field);
+                    });
+                }
+            }else {
+                var data = {
+                    "action": "saveField",
+                    "hash": _this.record_hash,
+                    "input_field": input_field,
+                    "input_value": input_value,
+                    "field_type": field_type,
+                    "date_field" : false
+                };
+
+                if(this.addpickdates.indexOf(input_field) > -1){
+                    data["date_field"] = true;
+                }
+
+                $.ajax({
+                    method: 'POST',
+                    data: data,
+                    dataType: 'json'
+                }).done(function (result) {
+                    console.log("saved " + field.metadata.field_name + " with result", result);
+                    field.updateStatus("done");
+                }).fail(function () {
+                    console.log("save failed on field ", field);
+                });
+            }
         }
     },
 

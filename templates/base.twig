@@ -13,10 +13,12 @@
             <link rel="apple-touch-icon-precomposed" href="{{ constant('APP_PATH_IMAGES') }}apple-touch-icon.png">
         {% endblock %}
 
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Google Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+
+        {% for source in styles %}
+            <link rel="stylesheet" href="{{ source }}" >
+        {% endfor %}
+
+
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
 
@@ -31,27 +33,15 @@
     </div>
 
     {% block jsFooter %}
-        <!-- Optional JavaScript -->
-        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-        <!-- JQuery -->
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <!-- Bootstrap tooltips -->
-        <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
-
-        <!-- Bootstrap core JavaScript -->
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-        <!-- MDB core JavaScript -->
-        <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-
-        <script src="https://cdn.jsdelivr.net/npm/mustache@4.0.0/mustache.min.js"
-                integrity="sha256-9olvBlD276rvCZS0O+SwBDR0S1j9xIdUiY+FOjP1XYU="
-                crossorigin="anonymous"></script>
+        <!-- Moved Lower -->
     {% endblock %}
 
     {% block bsmd %}
-        <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+        <script>
+            $(document).ready(function() {
+                $('body').bootstrapMaterialDesign();
+            });
+        </script>
     {% endblock %}
 </body>
 </html>

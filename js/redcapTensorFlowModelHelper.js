@@ -335,7 +335,8 @@ var RCTF = {
     readURL: function(uploadInput, destImage, callback) {
         var _this = this;
         // log("File read initiated...");
-        let input = uploadInput[0];
+        let input = uploadInput[0]; // You need to use standard javascript object here
+        
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 

@@ -26,17 +26,17 @@
         transition:.45s width ease-in-out;
     }
 
-    .bmd-form-group .fa-spinner,.bmd-form-group .fa-times,.bmd-form-group .fa-check-circle{
+    .form-group .fa-spinner,.form-group .fa-times,.form-group .fa-check-circle{
         display:none;
     }
     .bmd-form-group.queued .fa-spinner{
         display:inline-block;
     }
-    .bmd-form-group.failed .fa-times{
+    .form-group.failed .fa-times{
         display:inline-block;
     }
-    .bmd-form-group.done .fa-check-circle,
-    .bmd-form-group.is-filled .fa-check-circle{
+    .form-group.done .fa-check-circle,
+    .form-group.is-filled .fa-check-circle{
         display:inline-block;
     }
 
@@ -137,6 +137,22 @@
 
     <!-- Add TensorFlow Library -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js" integrity="sha384-LBtUZzDp17Y7UgB/KFromf1LnY7o5ls8Oxm4vEAoTM0U+JzaadctX2/buQiNHyQU" crossorigin="anonymous"></script>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- JQuery + DatePicker JS-->
+    <script src="{{ jquery341_datepicker }}"></script>
+
+    <!-- Bootstrap tooltips -->
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- MDB core JavaScript -->
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+
+    <!-- Mustache Library -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.0.0/mustache.min.js" integrity="sha256-9olvBlD276rvCZS0O+SwBDR0S1j9xIdUiY+FOjP1XYU=" crossorigin="anonymous"></script>
 
     <!-- Additional JS Files -->
     {% for source in sources %}

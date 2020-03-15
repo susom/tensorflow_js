@@ -12,7 +12,7 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+    <div class="form-group bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
         <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
         <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
         <div class="invalid-feedback">Invalid Input</div>
@@ -30,7 +30,7 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
+    <div class="form-group bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
         <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
         <textarea class="form-control" id="{{ field_name }}" name="{{ field_name }}" placeholder="" {{readonly}}>{{ current_value }}</textarea>
         <div class="invalid-feedback">Invalid Input</div>
@@ -48,7 +48,7 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
+    <div class="form-group bmd-form-group col-md  mb-5" data-field_name="{{field_name}}">
         <label class="h6 bmd-label-floating" for="{{ field_name }}">
             <i class="fas fa-spinner" ></i>
             <i class="fas fa-times"></i>
@@ -74,7 +74,7 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group col-md mb-5" data-field_name="{{field_name}}">
+    <div class="form-group bmd-form-group col-md mb-5" data-field_name="{{field_name}}">
         {{#element_label}}
             <p class="h6 mb-3 "><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</p>
         {{/element_label}}
@@ -100,7 +100,7 @@
         <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+    <div class="form-group bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
         {{#element_label}}
             <p class="h6 mb-3"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</p>
         {{/element_label}}
@@ -121,7 +121,7 @@
 </blockquote>
 </script>
 
-<script id="template_file_notyet" type="text/html">
+<script id="template_file" type="text/html">
     {{#element_preceding_header}}
     <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
         <h6>{{ element_preceding_header }}</h6>
@@ -132,17 +132,32 @@
     <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
     {{/form_menu_description}}
 
-    <div class="bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+    <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
         <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
-        <input type="text" class="form-control" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
+        <input type="file" class="form-control-file" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
         <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 
+<script id="template_slider" type="text/html">
+
+</script>
+
 <script id="template_datetime" type="text/html">
-    <div class="md-form">
-        <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker">
-        <label for="date-picker-example">Try me...</label>
+    {{#element_preceding_header}}
+    <div class="col-md py-3 mb-3 bg-light text-dark border rounded">
+        <h6>{{ element_preceding_header }}</h6>
+    </div>
+    {{/element_preceding_header}}
+
+    {{#form_menu_description}}
+    <h4 class="mb-3 col-md bg-info text-white py-3 px-3 rounded">{{form_menu_description}}</h4>
+    {{/form_menu_description}}
+
+    <div class="form-group bmd-form-group  col-md mb-5" data-field_name="{{field_name}}">
+        <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
+        <input type="text" class="form-control datepicker picker__input" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
+        <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
 

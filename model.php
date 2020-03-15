@@ -39,14 +39,20 @@ if(!empty($_POST['action'])) {
             $input_field = $_POST['input_field'];// filter_var($_POST['input_field'], FILTER_SANITIZE_STRING);
             $input_value = $_POST['input_value'];// filter_var($_POST['input_value'], FILTER_SANITIZE_STRING);
             $field_type  = $_POST['field_type'];
+            $date_field  = $_POST['date_field'];
 
             $fields = array();
-            if($field_type == "checkbox"){
-                foreach($input_value as $idx => $field_val){
+            if($field_type == "checkbox") {
+                foreach ($input_value as $idx => $field_val) {
                     $funky_name = $input_field . "___" . $field_val["val"];
                     $fields[$funky_name] = $field_val["checked"];
                 }
+            }else if($field_type == "file"){
+                $fields[$input_field] = $input_value;
             }else{
+                if($date_field){
+                    $input_value = date("Y-m-d", strtotime($input_value));
+                }
                 $fields[$input_field] = $input_value;
             }
             $data = array(
@@ -79,9 +85,15 @@ require_once(__DIR__."/vendor/autoload.php");
 $loader = new \Twig_Loader_Filesystem(__DIR__."/templates/");
 $twig   = new \Twig_Environment($loader);
 
+$css_sources = [
+    "https://use.fontawesome.com/releases/v5.8.2/css/all.css",
+    "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
+    $module->getUrl('css/pickadate.min.css',true,true)
+];
+
+
 // Additional javascript sources
 $js_ssources    = [
-    $module->getUrl('js/consolelog.js',true,true),
     $module->getUrl('js/redcapTensorFlowModelHelper.js', true, true),
     $module->getUrl('js/redcapForm.js', true, true),
 ];
@@ -100,7 +112,9 @@ $rcjs_renderer_config = [
 
 echo $twig->render("model.twig", [
         "sources"           => $js_ssources,
+        "styles"            => $css_sources,
         "emSettings"        => json_encode($emSettings),
         "renderer_config"   => json_encode($rcjs_renderer_config),
+        "jquery341_datepicker"  => $module->getUrl('js/jquery341_datepicker.min.js',true,true)
     ]
 );
