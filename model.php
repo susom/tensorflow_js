@@ -39,7 +39,7 @@ if(!empty($_POST['action'])) {
             $input_field = $_POST['input_field'];// filter_var($_POST['input_field'], FILTER_SANITIZE_STRING);
             $input_value = $_POST['input_value'];// filter_var($_POST['input_value'], FILTER_SANITIZE_STRING);
             $field_type  = $_POST['field_type'];
-            $date_field  = $_POST['date_field'];
+            $date_field  = filter_var($_POST['date_field'], FILTER_VALIDATE_BOOLEAN);
 
             $fields = array();
             if($field_type == "checkbox") {
@@ -48,7 +48,9 @@ if(!empty($_POST['action'])) {
                     $fields[$funky_name] = $field_val["checked"];
                 }
             }else if($field_type == "file"){
+                $file = current($_FILES);
                 $fields[$input_field] = $input_value;
+
             }else{
                 if($date_field){
                     $input_value = date("Y-m-d", strtotime($input_value));
@@ -61,7 +63,7 @@ if(!empty($_POST['action'])) {
             );
 
             $response = REDCapJsRenderer::saveData($data);
-            $response = array("response" => $response, "data" => $data);
+            $response = array("response" => $response, "data" => $_POST);
             break;
 
         case "saveAll":
