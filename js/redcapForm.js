@@ -250,7 +250,7 @@ RCForm = {
         this.addFormButtons();
 
         //start form disabled until image selected
-        this.disableForm();
+        // this.disableForm();
     },
 
     addFormButtons: function(){
@@ -326,29 +326,7 @@ RCForm = {
                 var file     = files[0];
 
                 if(files && file){
-                    var formData = new FormData();
-
-                    console.log(file.type);
-
-                    formData.append('input_value', file);
-                    formData.append('action', 'saveField ');
-                    formData.append('hash', _this.record_hash);
-                    formData.append('field_type', field_type);
-                    formData.append('input_field', input_field);
-
-                    console.log(formData.getAll("input_value"));
-
-                    $.ajax({
-                        method: 'POST',
-                        data: formData,
-                        contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
-                        processData: false, // NEEDED, DON'T OMIT THIS
-                    }).done(function (result) {
-                        field.updateStatus("done");
-                        console.log(result,"sheeeet");
-                    }).fail(function () {
-                        console.log("File save failed on field ", field);
-                    });
+                    this.ajaxlikeFormUpload(field);
                 }
             }else {
                 var data = {
@@ -376,6 +354,32 @@ RCForm = {
                 });
             }
         }
+    },
+
+    ajaxlikeFormUpload : function(field){
+        // create temp hidden iframe for submitting from/to;
+        if($('iframe[name=iframeTarget]').length < 1){
+            var iframe = document.createElement('iframe');
+            $(iframe).css('display','none');
+            $(iframe).attr('src','#');
+            $(iframe).attr('name','iframeTarget');
+            $('body').append(iframe);
+        }
+
+        var input_field     = field.getName();
+        var input_value     = field.getValue();
+        var field_type      = field.getType();
+        var el       = field.jq_input;
+        var js_input = field.jq_input[0];
+        var files    = js_input.files;
+        var file     = files[0];
+
+        el.parent().attr("target","iframeTarget");
+        el.parent().append($("<input type='hidden'>").attr("name","action").val("saveField"));
+        el.parent().append($("<input type='hidden'>").attr("name","hash").val(this.record_hash));
+        el.parent().append($("<input type='hidden'>").attr("name","field_type").val(field_type));
+        el.parent().append($("<input type='hidden'>").attr("name","input_field").val(input_field));
+        el.parent().trigger("submit");
     },
 
     getRecordHash: function(){

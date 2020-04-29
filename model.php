@@ -42,14 +42,21 @@ if(!empty($_POST['action'])) {
             $date_field  = filter_var($_POST['date_field'], FILTER_VALIDATE_BOOLEAN);
 
             $fields = array();
+            $file_field = null;
             if($field_type == "checkbox") {
                 foreach ($input_value as $idx => $field_val) {
                     $funky_name = $input_field . "___" . $field_val["val"];
                     $fields[$funky_name] = $field_val["checked"];
                 }
             }else if($field_type == "file"){
-                $file = current($_FILES);
-                $fields[$input_field] = $input_value;
+                $file       = current($_FILES);
+                $curlFile 	= curl_file_create($file["tmp_name"], $file["type"], $file["name"]);
+                $fields[$input_field] = $curlFile;
+
+                $file_field = $curlFile;
+
+
+
 
             }else{
                 if($date_field){
@@ -63,7 +70,7 @@ if(!empty($_POST['action'])) {
             );
 
             $response = REDCapJsRenderer::saveData($data);
-            $response = array("response" => $response, "data" => $_POST);
+            $response = array("response" => $response, "data" => $_POST, "file" => $file_field);
             break;
 
         case "saveAll":
@@ -120,3 +127,6 @@ echo $twig->render("model.twig", [
         "jquery341_datepicker"  => $module->getUrl('js/jquery341_datepicker.min.js',true,true)
     ]
 );
+
+
+exit;

@@ -134,7 +134,7 @@
 
     <div class="form-group  col-md mb-5" data-field_name="{{field_name}}">
         <label class="h6 bmd-label-floating" for="{{ field_name }}"><i class="fas fa-spinner" ></i><i class="fas fa-times"></i><i class="far fa-check-circle"></i> {{ element_label }}</label>
-        <input type="file" class="form-control-file" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}>
+        <form method="post" enctype="multipart/form-data"><input type="file" class="form-control-file" name="{{ field_name }}" id="{{ field_name }}" placeholder="" value="{{ current_value }}" {{readonly}}></form>
         <div class="invalid-feedback">Invalid Input</div>
     </div>
 </script>
